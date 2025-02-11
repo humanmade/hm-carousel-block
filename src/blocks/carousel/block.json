@@ -1,0 +1,24 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "hm/carousel",
+	"attributes": {},
+	"category": "design",
+	"description": "Preformatted block grouping for a carousel layout block.",
+	"editorScript": "file:./index.js",
+	"editorStyle": "file:./index.css",
+	"icon": "slides",
+	"keywords": [ "carousel", "slider", "roller" ],
+	"render": "file:./render.php",
+	"supports": {
+		"align": [ "full", "wide" ],
+		"spacing": {
+			"margin": true
+		}
+	},
+	"textdomain": "hm-carousel-block",
+	"title": "Features Carousel",
+	"version": "0.1.0",
+	"viewScript": "file:./view.js",
+	"style": "file:./view.css"
+}

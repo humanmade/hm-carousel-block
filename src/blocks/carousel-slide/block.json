@@ -1,0 +1,21 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 2,
+	"attributes": {
+		"title": {
+			"type": "string"
+		},
+		"thumbnailImageId": {
+			"type": "number"
+		}
+	},
+	"description": "Preformatted block grouping for a single carousel slide.",
+	"editorScript": "file:./index.js",
+	"icon": "slides",
+	"name": "hm/carousel-slide",
+	"parent": [ "hm/carousel" ],
+	"render": "file:./render.php",
+	"textdomain": "hm-carousel-block",
+	"title": "Features Carousel Slide",
+	"version": "1.0.0"
+}
