@@ -1,12 +1,13 @@
 import { InnerBlockSlider } from '@humanmade/block-editor-components';
 import { useMemo, useState } from '@wordpress/element';
-import { useSelect, useDispatch } from '@wordpress/data';
 import { __ } from '@wordpress/i18n';
 import {
-	RichText,
 	useBlockProps,
-	store as blockEditorDataStore,
+	InspectorControls,
+	useInnerBlocksProps
 } from '@wordpress/block-editor';
+import { PanelBody, ToggleControl, RangeControl, SelectControl, Notice } from '@wordpress/components';
+import TabNav from './components/tab-nav';
 
 const SLIDE_LIMIT = 100;
 const ALLOWED_BLOCK = 'hm/carousel-slide';
@@ -18,79 +19,112 @@ const ALLOWED_BLOCK = 'hm/carousel-slide';
  * @return {Element} Formatted blocks.
  */
 function Edit( props ) {
-	const { clientId } = props;
-
-	const innerBlocks = useSelect(
-		( select ) => {
-			return (
-				select( 'core/block-editor' ).getBlock( clientId )
-					?.innerBlocks || []
-			);
-		},
-		[ clientId ]
-	);
-
-	// Memoize an array of titles to reduce computation within the effect.
-	const slideList = useMemo( () => {
-		return innerBlocks.map( ( block ) => ( {
-			title: block?.attributes?.title ?? '',
-			id: block?.attributes?.id || block.clientId,
-		} ) );
-	}, [ innerBlocks ] );
+	const { clientId, attributes, setAttributes } = props;
+	const { hasTabNav, hasPagination, hasNavButtons, perPage, type, autoplay, interval, speed, easing } = attributes;
 
 	const blockProps = useBlockProps( {
 		className: 'hm-carousel',
 	} );
 
-	const { updateBlockAttributes } = useDispatch( blockEditorDataStore.name );
+	const innerBlocksProps = useInnerBlocksProps( {
+		className: 'hm-carousel__content',
+	} );
 
 	const [ currentSlideIndex, setCurrentSlideIndex ] = useState( 0 );
 
 	return (
-		<div { ...blockProps }>
-			<InnerBlockSlider.Controlled
-				allowedBlock={ ALLOWED_BLOCK }
-				className={ 'hm-carousel__content' }
-				slideLimit={ SLIDE_LIMIT }
-				parentBlockId={ clientId }
-				currentItemIndex={ currentSlideIndex }
-				setCurrentItemIndex={ setCurrentSlideIndex }
-			/>
-			<div className="hm-carousel__nav">
-				{ slideList.map( ( slide, i ) => {
-					let buttonClassName = 'hm-carousel__nav-button';
-
-					if ( i === currentSlideIndex ) {
-						buttonClassName +=
-							' hm-carousel__nav-button is-active';
-					}
-
-					return (
-						<button
-							className={ buttonClassName }
-							key={ slide.id }
-							onClick={ () => {
-								setCurrentSlideIndex( i );
-							} }
-						>
-							<RichText
-								tagName="span"
-								value={ slide.title }
-								onChange={ ( title ) => {
-									updateBlockAttributes( slide.id, {
-										title,
-									} );
-								} }
-								placeholder={ __(
-									'Slide title…',
-									'hm-carousel'
-								) }
+		<>
+			<InspectorControls>
+				<PanelBody title={ __( 'Carousel Settings', 'hm-carousel' ) }>
+					<ToggleControl
+						label={ __( 'Enable Pagination', 'hm-carousel' ) }
+						checked={ hasPagination }
+						onChange={ ( value ) => setAttributes( { hasPagination: value } ) }
+					/>
+					<ToggleControl
+						label={ __( 'Show Navigation Buttons', 'hm-carousel' ) }
+						checked={ hasNavButtons }
+						onChange={ ( value ) => setAttributes( { hasNavButtons: value } ) }
+					/>
+					<SelectControl
+						label={ __( 'Carousel Type', 'hm-carousel' ) }
+						value={ type }
+						options={ [
+							{ label: __( 'Fade', 'hm-carousel' ), value: 'fade' },
+							{ label: __( 'Loop', 'hm-carousel' ), value: 'loop' },
+							{ label: __( 'Slide', 'hm-carousel' ), value: 'slide' },
+						] }
+						onChange={ ( value ) => setAttributes( { type: value } ) }
+					/>
+					{ ( type === 'loop' || type === 'slide' ) && (
+						<RangeControl
+							label={ __( 'Slides Per Page', 'hm-carousel' ) }
+							value={ perPage }
+							onChange={ ( value ) => setAttributes( { perPage: value } ) }
+							min={ 1 }
+							max={ 10 }
+						/>
+					) }
+					<SelectControl
+						label={ __( 'Animation style', 'hm-carousel' ) }
+						value={ easing }
+						options={ [
+							{ label: __( 'Ease', 'hm-carousel' ), value: 'ease' },
+							{ label: __( 'Linear', 'hm-carousel' ), value: 'linear' },
+						] }
+						onChange={ ( value ) => setAttributes( { easing: value } ) }
+					/>
+					<RangeControl
+						label={ __( 'Transition Speed (seconds)', 'hm-carousel' ) }
+						value={ speed / 1000 }
+						onChange={ ( value ) => setAttributes( { speed: value * 1000 } ) }
+						min={ 0 }
+						max={ 3 }
+						step={ 0.1 }
+					/>
+					<ToggleControl
+						label={ __( 'Autoplay', 'hm-carousel' ) }
+						checked={ autoplay }
+						onChange={ ( value ) => setAttributes( { autoplay: value } ) }
+					/>
+					{ autoplay && (
+						<>
+							<RangeControl
+								label={ __( 'Autoplay Interval (seconds)', 'hm-carousel' ) }
+								value={ interval / 1000 }
+								onChange={ ( value ) => setAttributes( { interval: value * 1000 } ) }
+								min={ 0 }
+								max={ 10 }
+								step={ 1 }
 							/>
-						</button>
-					);
-				} ) }
+							{ autoplay && ! hasPagination && ! hasNavButtons && (
+								<Notice
+									status="warning"
+									isDismissible={ false }
+								>
+									{ __( 'For accessibility reasons it is best not to rely on autoplay alone for changing slides, unless the carousel is just for a decorative purpose. Otherwise, the user will have no way to rotate the carousel while prefers-reduced-motion is enabled.', 'hm-carousel' ) }
+								</Notice>
+							) }
+						</>
+					) }
+				</PanelBody>
+			</InspectorControls>
+			<div { ...blockProps }>
+				<InnerBlockSlider.Controlled
+					allowedBlock={ ALLOWED_BLOCK }
+					className={ 'hm-carousel__content' }
+					slideLimit={ SLIDE_LIMIT }
+					parentBlockId={ clientId }
+					currentItemIndex={ currentSlideIndex }
+					setCurrentItemIndex={ setCurrentSlideIndex }
+				/>
+				{ hasTabNav && (
+					<TabNav
+						blockId={ clientId }
+					/>
+				) }
 			</div>
-		</div>
+		</>
 	);
 }
 

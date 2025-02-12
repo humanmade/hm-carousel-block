@@ -7,16 +7,32 @@ namespace HM\CarouselBlock\Blocks\Carousel;
 
 use const HM\CarouselBlock\PLUGIN_PATH;
 
-function bootstrap() {
+/**
+ * Setup.
+ *
+ * @return void
+ */
+function bootstrap(): void {
 	add_action( 'init', __NAMESPACE__ . '\\register_block' );
-	add_action( 'wp_enqueue_scripts', __NAMESPACE__ . '\\enqueue_scripts' );
+	add_action( 'wp_enqueue_scripts', __NAMESPACE__ . '\\register_vendor_scripts' );
+	add_action( 'wp_enqueue_scripts', __NAMESPACE__ . '\\modify_block_scripts' );
 }
 
-function register_block() {
+/**
+ * Register the carousel block.
+ *
+ * @return void
+ */
+function register_block(): void {
 	register_block_type( PLUGIN_PATH . '/build/blocks/carousel/block.json' );
 }
 
-function enqueue_scripts() {
+/**
+ * Register vendor scripts and styles.
+ *
+ * @return void
+ */
+function register_vendor_scripts(): void {
 	$splide_asset = include PLUGIN_PATH . '/build-vendor/splide.asset.php';
 	wp_register_script(
 		'splide',
@@ -35,12 +51,26 @@ function enqueue_scripts() {
 		$splide_asset['dependencies'],
 		$splide_asset['version'],
 	);
+}
 
+/**
+ * Modify block assets.
+ *
+ * @return void
+ */
+function modify_block_scripts(): void {
 	// Defer load view script.
 	wp_script_add_data( 'hm-carousel-view-script', 'strategy', 'defer' );
 
-	// Ensure dependencies set up for view script.
 	global $wp_scripts, $wp_styles;
-	$wp_scripts->registered['hm-carousel-view-script']->deps[] = 'splide';
-	$wp_styles->registered['hm-carousel-style']->deps[] = 'splide';
+
+	// Add splide script as dependency.
+	if ( isset( $wp_scripts->registered['hm-carousel-view-script'] ) ) {
+		$wp_scripts->registered['hm-carousel-view-script']->deps[] = 'splide';
+	}
+
+	// Add splide styles as dependency.
+	if ( isset( $wp_styles->registered['hm-carousel-style'] ) ) {
+		$wp_styles->registered['hm-carousel-style']->deps[] = 'splide';
+	}
 }

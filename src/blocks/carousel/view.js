@@ -5,10 +5,10 @@ const Splide = window.Splide;
 
 const BLOCK_STYLES =  [ 'timeline' ];
 
-function getBlockStyle( blockElement ) {
+function getBlockStyle( blockEl ) {
 	const styles = BLOCK_STYLES;
 	const foundStyle = styles.findIndex( ( style ) =>
-		blockElement.classList.contains( 'is-style-' + style )
+		blockEl.classList.contains( 'is-style-' + style )
 	);
 	return foundStyle >= 0 ? styles[ foundStyle ] : 'default';
 }
@@ -16,13 +16,13 @@ function getBlockStyle( blockElement ) {
 /**
  * Functionality for the HM Carousel block.
  *
- * @param {Element} blockElement
+ * @param {Element} blockEl
  */
-function setupCarousel( blockElement ) {
+function setupCarousel( blockEl, settings ) {
 	// Setup splide structure.
-	blockElement.classList.add( 'splide' );
+	blockEl.classList.add( 'splide' );
 
-	const listEl = blockElement.querySelector(
+	const listEl = blockEl.querySelector(
 		'.hm-carousel__content'
 	);
 	listEl.classList.add( 'splide__list' );
@@ -31,72 +31,33 @@ function setupCarousel( blockElement ) {
 	trackEl.classList.add( 'splide__track' );
 
 	// Wrap the target element with the container element
-	blockElement.appendChild( trackEl );
+	blockEl.appendChild( trackEl );
 	trackEl.appendChild( listEl );
 
-	const slides = blockElement.querySelectorAll(
+	const slides = blockEl.querySelectorAll(
 		'.hm-carousel-slide'
 	);
 	slides.forEach( ( slide ) => slide.classList.add( 'splide__slide' ) );
 
-	const config = {
-		type: 'fade',
-		speed: 800,
-		pagination: false,
-		arrows: false,
+	setupNav( blockEl, settings );
+
+	const splideConfig = {
+		type: settings.type,
+		speed: settings.speed,
+		pagination: settings.hasPagination,
+		arrows: settings.hasNavButtons,
 		rewind: false,
+		perPage: settings.type === 'fade' ? 1 : settings.perPage,
+		autoplay: settings.autoplay,
+		pauseOnHover: settings.autoplay,
+		interval: settings.interval + settings.speed,
+		easing: settings.easing,
 	};
 
-	return new Splide( blockElement, config );
+	return new Splide( blockEl, splideConfig );
 }
 
-/*
- * Setup secondary thumbnail carousel.
- *
- * Must do this after mounted.
- *
- * @param {Element} blockElement
- */
-function setupThumbnailCarousel( blockElement ) {
-	const thumbnailEl = document.createElement( 'div' );
-	thumbnailEl.classList.add( 'hm-carousel__nav', 'splide' );
-
-	const thumbnailTrack = document.createElement( 'div' );
-	thumbnailTrack.classList.add( 'splide__track' );
-	thumbnailEl.appendChild( thumbnailTrack );
-
-	const thumbnailList = document.createElement( 'div' );
-	thumbnailList.classList.add( 'splide__list' );
-	thumbnailTrack.appendChild( thumbnailList );
-
-	blockElement
-		.querySelectorAll( '.hm-carousel-slide' )
-		.forEach( ( slideEl ) => {
-			const slideTitle = slideEl.dataset.title;
-			const btnEl = document.createElement( 'button' );
-			thumbnailList.appendChild( btnEl );
-
-			// Container span for styling.
-			const spanEl = document.createElement( 'span' );
-			spanEl.classList.add( 'hm-carousel__nav-button-text' );
-			spanEl.appendChild( document.createTextNode( slideTitle ) );
-
-			btnEl.appendChild( spanEl );
-			btnEl.classList.add(
-				'splide__slide',
-				'hm-carousel__nav-button'
-			);
-
-			// Thumbnail image.
-			if ( slideEl.dataset.thumbnailImageSrc ) {
-				const imgEl = document.createElement( 'img' );
-				imgEl.classList.add( 'hm-carousel__nav-button-img' );
-				imgEl.setAttribute( 'src', slideEl.dataset.thumbnailImageSrc );
-				imgEl.setAttribute( 'loading', 'lazy' );
-				btnEl.appendChild( imgEl );
-			}
-		} );
-
+function createNavButtons() {
 	// Create arrow container
 	const arrowsEl = document.createElement( 'div' );
 	arrowsEl.classList.add( 'splide__arrows' );
@@ -113,67 +74,34 @@ function setupThumbnailCarousel( blockElement ) {
 	// Add arrow elements to page.
 	arrowsEl.appendChild( prevBtnEl );
 	arrowsEl.appendChild( nextBtnEl );
-	thumbnailEl.appendChild( arrowsEl );
 
-	blockElement.appendChild( thumbnailEl );
+	return arrowsEl;
+}
 
-	const style = getBlockStyle( blockElement );
+/*
+ * Setup secondary thumbnail carousel.
+ *
+ * Must do this after mounted.
+ *
+ * @param {Element} blockEl
+ */
+function setupNav( blockEl, settings ) {
+	const navEl = document.createElement( 'div' );
+	navEl.classList.add( 'hm-carousel__nav' );
+	blockEl.appendChild( navEl );
 
-	const defaultConfig = {
-		isNavigation: true,
-		rewind: false,
-		pagination: false,
-	};
+	if ( settings.hasNavButtons ) {
+		const arrowsEl = createNavButtons();
+		navEl.appendChild( arrowsEl );
+	}
 
-	const config = {
-		timeline: {
-			perPage: 8,
-			breakpoints: {
-				1024: {
-					perPage: 6,
-				},
-				782: {
-					perPage: 5,
-				},
-				512: {
-					perPage: 4,
-				},
-			},
-		},
-		default: {
-			perPage: 5,
-			gap: '1.5rem',
-			breakpoints: {
-				1024: {
-					perPage: 4,
-				},
-				782: {
-					perPage: 3,
-				},
-				512: {
-					perPage: 2,
-				},
-			},
-		},
-	};
+	if ( settings.hasPagination ) {
+		const paginationEl = document.createElement( 'ul' );
+		paginationEl.classList.add( 'splide__pagination' );
+		navEl.appendChild( paginationEl );
+	}
 
-	const thumbnailSplide = new Splide( thumbnailEl, {
-		...defaultConfig,
-		...config[ style ],
-	} );
-
-	thumbnailSplide.on( 'mounted', () => {
-		const slides = thumbnailSplide.Components.Elements.slides;
-
-		slides.forEach( ( slide ) => {
-			slide.setAttribute(
-				'aria-label',
-				slide.textContent + ': ' + slide.getAttribute( 'aria-label' )
-			);
-		} );
-	} );
-
-	return thumbnailSplide;
+	return navEl;
 }
 
 /**
@@ -181,15 +109,23 @@ function setupThumbnailCarousel( blockElement ) {
  *
  * Ensure initial state is correct.
  *
- * @param {HTMLElement} blockElement Carousel block.
+ * @param {HTMLElement} blockEl Carousel block.
  */
-function initCarouselBlock( blockElement ) {
-	const carousel = setupCarousel( blockElement );
-	const thumbnailCarousel = setupThumbnailCarousel( blockElement );
+function initCarouselBlock( blockEl ) {
+	const settings = {
+		speed: parseInt(blockEl.dataset.speed, 10) || 800,
+		type: blockEl.dataset.type || 'slide',
+		// hasTabNav: blockEl.dataset.hasTabNav === 'true',
+		hasPagination: blockEl.dataset.hasPagination === 'true',
+		hasNavButtons: blockEl.dataset.hasNavButtons === 'true',
+		perPage: parseInt(blockEl.dataset.perPage, 10) || 1,
+		autoplay: blockEl.dataset.autoplay === 'true',
+		interval: blockEl.dataset.interval !== undefined ? parseInt(blockEl.dataset.interval, 10) : 3000,
+		easing: blockEl.dataset.easing || 'ease',
+	};
 
-	carousel.sync( thumbnailCarousel );
+	const carousel = setupCarousel( blockEl, settings );
 	carousel.mount();
-	thumbnailCarousel.mount();
 }
 
 /**

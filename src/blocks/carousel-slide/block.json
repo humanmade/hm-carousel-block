@@ -16,6 +16,6 @@
 	"parent": [ "hm/carousel" ],
 	"render": "file:./render.php",
 	"textdomain": "hm-carousel-block",
-	"title": "Features Carousel Slide",
+	"title": "Carousel Slide",
 	"version": "1.0.0"
 }

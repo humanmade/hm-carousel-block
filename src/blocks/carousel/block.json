@@ -2,7 +2,44 @@
 	"$schema": "https://schemas.wp.org/trunk/block.json",
 	"apiVersion": 3,
 	"name": "hm/carousel",
-	"attributes": {},
+	"attributes": {
+		"hasTabNav": {
+			"type": "boolean",
+			"default": false
+		},
+		"hasPagination": {
+			"type": "boolean",
+			"default": true
+		},
+		"hasNavButtons": {
+			"type": "boolean",
+			"default": true
+		},
+		"perPage": {
+			"type": "number",
+			"default": 1
+		},
+		"type": {
+			"type": "string",
+			"default": "slide"
+		},
+		"autoplay": {
+			"type": "boolean",
+			"default": false
+		},
+		"interval": {
+			"type": "number",
+			"default": 3000
+		},
+		"speed": {
+			"type": "number",
+			"default": 800
+		},
+		"easing": {
+			"type": "string",
+			"default": "ease"
+		}
+	},
 	"category": "design",
 	"description": "Preformatted block grouping for a carousel layout block.",
 	"editorScript": "file:./index.js",
@@ -17,7 +54,7 @@
 		}
 	},
 	"textdomain": "hm-carousel-block",
-	"title": "Features Carousel",
+	"title": "Carousel",
 	"version": "0.1.0",
 	"viewScript": "file:./view.js",
 	"style": "file:./view.css"
