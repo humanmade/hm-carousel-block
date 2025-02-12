@@ -14,7 +14,8 @@
 		"lint:js": "wp-scripts lint-js",
 		"packages-update": "wp-scripts packages-update",
 		"plugin-zip": "wp-scripts plugin-zip",
-		"start": "wp-scripts start"
+		"start": "wp-scripts start",
+		"release": "git fetch origin && git checkout release && git reset origin/main --hard && npm run build && git add -f build build-vendor && git commit -m 'Release build' --no-verify && git push origin release --force && git checkout -"
 	},
 	"devDependencies": {
 		"@wordpress/scripts": "^30.10.0"
