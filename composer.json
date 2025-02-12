@@ -1,0 +1,7 @@
+{
+	"name": "humanmade/hm-carousel-block",
+	"description": "Lightweight carousel block using SplideJS",
+	"type": "wordpress-plugin",
+	"license": "GPL-2.0-or-later",
+	"require": {}
+}
