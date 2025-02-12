@@ -6,7 +6,8 @@
 	"license": "GPL-2.0-or-later",
 	"main": "build/index.js",
 	"scripts": {
-		"build": "wp-scripts build",
+		"build": "npm run build && npm run build:vendor",
+		"build:blocks": "wp-scripts build",
 		"build:vendor": "wp-scripts build splide.js --source-path=./vendor --output-path=build-vendor",
 		"format": "wp-scripts format",
 		"lint:css": "wp-scripts lint-style",
