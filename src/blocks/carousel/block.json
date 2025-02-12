@@ -9,7 +9,7 @@
 		},
 		"hasPagination": {
 			"type": "boolean",
-			"default": true
+			"default": false
 		},
 		"hasNavButtons": {
 			"type": "boolean",
