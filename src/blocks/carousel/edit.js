@@ -111,21 +111,21 @@ function Edit( props ) {
 				{ hasPagination && hasThumbnailPagination && (
 					<PanelBody title={ __( 'Thumbnail Carousel Settings', 'hm-carousel' ) }>
 						<RangeControl
-							label={ __( 'Thumbnails per row (Desktop)', 'hm-carousel' ) }
+							label={ __( 'Thumbnails shown (Desktop)', 'hm-carousel' ) }
 							value={ thumbnailCount.desktop }
 							onChange={ ( value ) => setAttributes( { thumbnailCount: { ...thumbnailCount, desktop: value } } ) }
 							min={ 1 }
 							max={ 10 }
 						/>
 						<RangeControl
-							label={ __( 'Thumbnails per row (Tablet)', 'hm-carousel' ) }
+							label={ __( 'Thumbnails shown (Tablet)', 'hm-carousel' ) }
 							value={ thumbnailCount.tablet }
 							onChange={ ( value ) => setAttributes( { thumbnailCount: { ...thumbnailCount, tablet: value } } ) }
 							min={ 1 }
 							max={ 10 }
 						/>
 						<RangeControl
-							label={ __( 'Thumbnails per row (Mobile)', 'hm-carousel' ) }
+							label={ __( 'Thumbnails shown (Mobile)', 'hm-carousel' ) }
 							value={ thumbnailCount.mobile }
 							onChange={ ( value ) => setAttributes( { thumbnailCount: { ...thumbnailCount, mobile: value } } ) }
 							min={ 1 }
@@ -139,6 +139,7 @@ function Edit( props ) {
 								{ label: __( 'Buttons', 'hm-carousel' ), value: 'buttons' },
 							] }
 							onChange={ ( value ) => setAttributes( { thumbnailNavType: value } ) }
+							help={ __( 'Displayed only when the number of thumbnails is greater than the thumbnails shown.') }
 						/>
 					</PanelBody>
 				) }
@@ -169,6 +170,7 @@ function Edit( props ) {
 							label={ __( 'Move one slide at a time', 'hm-carousel' ) }
 							checked={ moveSlidesIndividually }
 							onChange={ ( value ) => setAttributes( { moveSlidesIndividually: value } ) }
+							help={ __( 'The default behavior is to move a page of slides at a time.') }
 						/>
 					</PanelBody>
 				) }
