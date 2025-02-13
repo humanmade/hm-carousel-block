@@ -46,6 +46,14 @@
 		"hasThumbnailPagination": {
 			"type": "boolean",
 			"default": false
+		},
+		"thumbnailCount": {
+			"type": "object",
+			"default": {
+				"desktop": 5,
+				"tablet": 3,
+				"mobile": 2
+			}
 		}
 	},
 	"category": "design",

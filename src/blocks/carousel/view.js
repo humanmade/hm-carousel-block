@@ -52,6 +52,7 @@ function setupCarousel( blockEl, settings ) {
 		pauseOnHover: settings.autoplay,
 		interval: settings.interval + settings.speed,
 		easing: settings.easing,
+		gap: '1.5rem',
 	};
 
 	// Force disable pagination if thumbnail carousel is enabled.
@@ -147,17 +148,14 @@ function setupThumbnailCarousel( blockEl, settings ) {
 		pagination: false,
 		isNavigation: true,
 		arrows: false,
-		perPage: 3,
+		perPage: settings.thumbnailCount.desktop,
 		gap: '1.5rem',
 		breakpoints: {
 			1024: {
-				perPage: 4,
+				perPage: settings.thumbnailCount.tablet,
 			},
-			782: {
-				perPage: 3,
-			},
-			512: {
-				perPage: 2,
+			768: {
+				perPage: settings.thumbnailCount.mobile,
 			},
 		},
 	};
@@ -243,7 +241,8 @@ function initCarouselBlock( blockEl ) {
 		interval: blockEl.dataset.interval !== undefined ? parseInt(blockEl.dataset.interval, 10) : 3000,
 		easing: blockEl.dataset.easing || 'ease',
 		moveSlidesIndividually: blockEl.dataset.moveSlidesIndividually === 'true',
-		hasThumbnailPagination: blockEl.dataset.hasThumbnailPagination === 'true',
+		hasThumbnailPagination: blockEl.dataset.hasPagination === 'true' && blockEl.dataset.hasThumbnailPagination === 'true',
+		thumbnailCount: JSON.parse(blockEl.dataset.thumbnailCount),
 	};
 
 	const carousel = setupCarousel( blockEl, settings );

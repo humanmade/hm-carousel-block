@@ -20,7 +20,7 @@ const ALLOWED_BLOCK = 'hm/carousel-slide';
  */
 function Edit( props ) {
 	const { clientId, attributes, setAttributes } = props;
-	const { hasTabNav, hasPagination, hasNavButtons, perPage, type, autoplay, interval, speed, easing, moveSlidesIndividually, hasThumbnailPagination } = attributes;
+	const { hasTabNav, hasPagination, hasNavButtons, perPage, type, autoplay, interval, speed, easing, moveSlidesIndividually, hasThumbnailPagination, thumbnailCount } = attributes;
 
 	const blockProps = useBlockProps( {
 		className: 'hm-carousel',
@@ -35,17 +35,26 @@ function Edit( props ) {
 	return (
 		<>
 			<InspectorControls>
-				<PanelBody title={ __( 'Carousel Settings', 'hm-carousel' ) }>
+				<PanelBody title={ __( 'Carousel Navigation Settings', 'hm-carousel' ) }>
 					<ToggleControl
 						label={ __( 'Enable Pagination', 'hm-carousel' ) }
 						checked={ hasPagination }
 						onChange={ ( value ) => setAttributes( { hasPagination: value } ) }
 					/>
+					{ hasPagination && (
+						<ToggleControl
+							label={ __( 'Thumbnail Carousel', 'hm-carousel' ) }
+							checked={ hasThumbnailPagination }
+							onChange={ ( value ) => setAttributes( { hasThumbnailPagination: value } ) }
+						/>
+					) }
 					<ToggleControl
 						label={ __( 'Show Navigation Buttons', 'hm-carousel' ) }
 						checked={ hasNavButtons }
 						onChange={ ( value ) => setAttributes( { hasNavButtons: value } ) }
 					/>
+				</PanelBody>
+				<PanelBody title={ __( 'Carousel Animation Settings', 'hm-carousel' ) }>
 					<SelectControl
 						label={ __( 'Carousel Type', 'hm-carousel' ) }
 						value={ type }
@@ -102,7 +111,7 @@ function Edit( props ) {
 								onChange={ ( value ) => setAttributes( { interval: value * 1000 } ) }
 								min={ 0 }
 								max={ 10 }
-								step={ 1 }
+								step={ 0.1 }
 							/>
 							{ autoplay && ! hasPagination && ! hasNavButtons && (
 								<Notice
@@ -114,14 +123,32 @@ function Edit( props ) {
 							) }
 						</>
 					) }
-					{ hasPagination && (
-						<ToggleControl
-							label={ __( 'Thumbnail Carousel', 'hm-carousel' ) }
-							checked={ hasThumbnailPagination }
-							onChange={ ( value ) => setAttributes( { hasThumbnailPagination: value } ) }
-						/>
-					) }
 				</PanelBody>
+				{ hasPagination && hasThumbnailPagination && (
+					<PanelBody title={ __( 'Thumbnail Carousel Settings', 'hm-carousel' ) }>
+						<RangeControl
+							label={ __( 'Thumbnails per row (Desktop)', 'hm-carousel' ) }
+							value={ thumbnailCount.desktop }
+							onChange={ ( value ) => setAttributes( { thumbnailCount: { ...thumbnailCount, desktop: value } } ) }
+							min={ 1 }
+							max={ 10 }
+						/>
+						<RangeControl
+							label={ __( 'Thumbnails per row (Tablet)', 'hm-carousel' ) }
+							value={ thumbnailCount.tablet }
+							onChange={ ( value ) => setAttributes( { thumbnailCount: { ...thumbnailCount, tablet: value } } ) }
+							min={ 1 }
+							max={ 10 }
+						/>
+						<RangeControl
+							label={ __( 'Thumbnails per row (Mobile)', 'hm-carousel' ) }
+							value={ thumbnailCount.mobile }
+							onChange={ ( value ) => setAttributes( { thumbnailCount: { ...thumbnailCount, mobile: value } } ) }
+							min={ 1 }
+							max={ 10 }
+						/>
+					</PanelBody>
+				) }
 			</InspectorControls>
 			<div { ...blockProps }>
 				<InnerBlockSlider.Controlled
