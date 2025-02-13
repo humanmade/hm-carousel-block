@@ -21,7 +21,7 @@
 		"@wordpress/scripts": "^30.10.0"
 	},
 	"dependencies": {
-		"@humanmade/block-editor-components": "^0.7.0",
+		"@humanmade/block-editor-components": "^0.8.0",
 		"@splidejs/splide": "^4.1.4"
 	}
 }
