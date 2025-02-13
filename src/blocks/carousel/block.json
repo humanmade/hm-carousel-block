@@ -38,6 +38,10 @@
 		"easing": {
 			"type": "string",
 			"default": "ease"
+		},
+		"moveSlidesIndividually": {
+			"type": "boolean",
+			"default": false
 		}
 	},
 	"category": "design",

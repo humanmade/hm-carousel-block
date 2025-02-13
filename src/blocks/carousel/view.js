@@ -54,6 +54,11 @@ function setupCarousel( blockEl, settings ) {
 		easing: settings.easing,
 	};
 
+	if ( settings.perPage > 1 && settings.moveSlidesIndividually ) {
+		splideConfig.perMove = settings.moveSlidesIndividually ? 1 : settings.perPage;
+		splideConfig.focus = settings.moveSlidesIndividually ? 0 : 1;
+	}
+
 	return new Splide( blockEl, splideConfig );
 }
 
@@ -122,6 +127,7 @@ function initCarouselBlock( blockEl ) {
 		autoplay: blockEl.dataset.autoplay === 'true',
 		interval: blockEl.dataset.interval !== undefined ? parseInt(blockEl.dataset.interval, 10) : 3000,
 		easing: blockEl.dataset.easing || 'ease',
+		moveSlidesIndividually: blockEl.dataset.moveSlidesIndividually === 'true',
 	};
 
 	const carousel = setupCarousel( blockEl, settings );

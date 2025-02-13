@@ -40,9 +40,9 @@ function Edit( { attributes, setAttributes } ) {
 				<ImageControl
 					label="Carousel image"
 					value={ attributes.thumbnailImageId }
-					onChange={ ( { id } ) =>
-						setAttributes( { thumbnailImageId: id } )
-					}
+					onChange={ image => {
+						setAttributes( { thumbnailImageId: image?.id || null } )
+					} }
 				/>
 			</PanelBody>
 		</InspectorControls>,

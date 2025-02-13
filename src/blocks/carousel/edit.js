@@ -20,7 +20,7 @@ const ALLOWED_BLOCK = 'hm/carousel-slide';
  */
 function Edit( props ) {
 	const { clientId, attributes, setAttributes } = props;
-	const { hasTabNav, hasPagination, hasNavButtons, perPage, type, autoplay, interval, speed, easing } = attributes;
+	const { hasTabNav, hasPagination, hasNavButtons, perPage, type, autoplay, interval, speed, easing, moveSlidesIndividually } = attributes;
 
 	const blockProps = useBlockProps( {
 		className: 'hm-carousel',
@@ -63,6 +63,13 @@ function Edit( props ) {
 							onChange={ ( value ) => setAttributes( { perPage: value } ) }
 							min={ 1 }
 							max={ 10 }
+						/>
+					) }
+					{ perPage > 1 && (
+						<ToggleControl
+							label={ __( 'Move slides individually', 'hm-carousel' ) }
+							checked={ moveSlidesIndividually }
+							onChange={ ( value ) => setAttributes( { moveSlidesIndividually: value } ) }
 						/>
 					) }
 					<SelectControl
@@ -117,6 +124,7 @@ function Edit( props ) {
 					parentBlockId={ clientId }
 					currentItemIndex={ currentSlideIndex }
 					setCurrentItemIndex={ setCurrentSlideIndex }
+					perPage={ perPage }
 				/>
 				{ hasTabNav && (
 					<TabNav
