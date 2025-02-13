@@ -42,6 +42,10 @@
 		"moveSlidesIndividually": {
 			"type": "boolean",
 			"default": false
+		},
+		"hasThumbnailPagination": {
+			"type": "boolean",
+			"default": false
 		}
 	},
 	"category": "design",

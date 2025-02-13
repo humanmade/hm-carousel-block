@@ -20,7 +20,7 @@ const ALLOWED_BLOCK = 'hm/carousel-slide';
  */
 function Edit( props ) {
 	const { clientId, attributes, setAttributes } = props;
-	const { hasTabNav, hasPagination, hasNavButtons, perPage, type, autoplay, interval, speed, easing, moveSlidesIndividually } = attributes;
+	const { hasTabNav, hasPagination, hasNavButtons, perPage, type, autoplay, interval, speed, easing, moveSlidesIndividually, hasThumbnailPagination } = attributes;
 
 	const blockProps = useBlockProps( {
 		className: 'hm-carousel',
@@ -67,7 +67,7 @@ function Edit( props ) {
 					) }
 					{ perPage > 1 && (
 						<ToggleControl
-							label={ __( 'Move slides individually', 'hm-carousel' ) }
+							label={ __( 'Move one slide at a time', 'hm-carousel' ) }
 							checked={ moveSlidesIndividually }
 							onChange={ ( value ) => setAttributes( { moveSlidesIndividually: value } ) }
 						/>
@@ -113,6 +113,13 @@ function Edit( props ) {
 								</Notice>
 							) }
 						</>
+					) }
+					{ hasPagination && (
+						<ToggleControl
+							label={ __( 'Thumbnail Carousel', 'hm-carousel' ) }
+							checked={ hasThumbnailPagination }
+							onChange={ ( value ) => setAttributes( { hasThumbnailPagination: value } ) }
+						/>
 					) }
 				</PanelBody>
 			</InspectorControls>

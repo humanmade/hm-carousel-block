@@ -33,12 +33,12 @@ function Edit( { attributes, setAttributes } ) {
 				title={ __( 'Carousel Slide Advanced Settings', 'hm-tabs' ) }
 			>
 				<TextControl
-					label="Slide title"
+					label="Thumbnail title"
 					value={ attributes.title }
 					onChange={ ( title ) => setAttributes( { title } ) }
 				/>
 				<ImageControl
-					label="Carousel image"
+					label="Thumbnail image"
 					value={ attributes.thumbnailImageId }
 					onChange={ image => {
 						setAttributes( { thumbnailImageId: image?.id || null } )
