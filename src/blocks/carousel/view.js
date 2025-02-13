@@ -47,12 +47,20 @@ function setupCarousel( blockEl, settings ) {
 		pagination: settings.hasPagination,
 		arrows: settings.hasNavButtons,
 		rewind: false,
-		perPage: settings.type === 'fade' ? 1 : settings.perPage,
+		perPage: settings.type === 'fade' ? 1 : settings.slidesPerPage.desktop,
 		autoplay: settings.autoplay,
 		pauseOnHover: settings.autoplay,
 		interval: settings.interval + settings.speed,
 		easing: settings.easing,
 		gap: '1.5rem',
+		breakpoints: {
+			1024: {
+				perPage: settings.slidesPerPage.tablet,
+			},
+			768: {
+				perPage: settings.slidesPerPage.mobile,
+			},
+		},
 	};
 
 	// Force disable pagination if thumbnail carousel is enabled.
@@ -61,12 +69,11 @@ function setupCarousel( blockEl, settings ) {
 		splideConfig.arrows = false;
 	}
 
-	if ( settings.perPage > 1 && settings.moveSlidesIndividually ) {
-		splideConfig.perMove = settings.moveSlidesIndividually ? 1 : settings.perPage;
-		splideConfig.focus = settings.moveSlidesIndividually ? 0 : 1;
+	// Should navigation move single slides or a page of slides.
+	if ( settings.moveSlidesIndividually ) {
+		splideConfig.perMove = 1;
+		splideConfig.focus = 0;
 	}
-
-	console.log( splideConfig );
 
 	return new Splide( blockEl, splideConfig );
 }
@@ -236,13 +243,13 @@ function initCarouselBlock( blockEl ) {
 		type: blockEl.dataset.type || 'slide',
 		hasPagination: blockEl.dataset.hasPagination === 'true',
 		hasNavButtons: blockEl.dataset.hasNavButtons === 'true',
-		perPage: parseInt(blockEl.dataset.perPage, 10) || 1,
 		autoplay: blockEl.dataset.autoplay === 'true',
 		interval: blockEl.dataset.interval !== undefined ? parseInt(blockEl.dataset.interval, 10) : 3000,
 		easing: blockEl.dataset.easing || 'ease',
 		moveSlidesIndividually: blockEl.dataset.moveSlidesIndividually === 'true',
 		hasThumbnailPagination: blockEl.dataset.hasPagination === 'true' && blockEl.dataset.hasThumbnailPagination === 'true',
 		thumbnailCount: JSON.parse(blockEl.dataset.thumbnailCount),
+		slidesPerPage: JSON.parse(blockEl.dataset.slidesPerPage),
 	};
 
 	const carousel = setupCarousel( blockEl, settings );

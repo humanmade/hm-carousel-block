@@ -20,7 +20,7 @@ const ALLOWED_BLOCK = 'hm/carousel-slide';
  */
 function Edit( props ) {
 	const { clientId, attributes, setAttributes } = props;
-	const { hasTabNav, hasPagination, hasNavButtons, perPage, type, autoplay, interval, speed, easing, moveSlidesIndividually, hasThumbnailPagination, thumbnailCount } = attributes;
+	const { hasTabNav, hasPagination, hasNavButtons, type, autoplay, interval, speed, easing, moveSlidesIndividually, hasThumbnailPagination, thumbnailCount, slidesPerPage } = attributes;
 
 	const blockProps = useBlockProps( {
 		className: 'hm-carousel',
@@ -65,22 +65,6 @@ function Edit( props ) {
 						] }
 						onChange={ ( value ) => setAttributes( { type: value } ) }
 					/>
-					{ ( type === 'loop' || type === 'slide' ) && (
-						<RangeControl
-							label={ __( 'Slides Per Page', 'hm-carousel' ) }
-							value={ perPage }
-							onChange={ ( value ) => setAttributes( { perPage: value } ) }
-							min={ 1 }
-							max={ 10 }
-						/>
-					) }
-					{ perPage > 1 && (
-						<ToggleControl
-							label={ __( 'Move one slide at a time', 'hm-carousel' ) }
-							checked={ moveSlidesIndividually }
-							onChange={ ( value ) => setAttributes( { moveSlidesIndividually: value } ) }
-						/>
-					) }
 					<SelectControl
 						label={ __( 'Animation style', 'hm-carousel' ) }
 						value={ easing }
@@ -149,6 +133,36 @@ function Edit( props ) {
 						/>
 					</PanelBody>
 				) }
+				{ ( type === 'loop' || type === 'slide' ) && (
+					<PanelBody title={ __( 'Slides Per Page Settings', 'hm-carousel' ) }>
+						<RangeControl
+							label={ __( 'Slides per page (Desktop)', 'hm-carousel' ) }
+							value={ slidesPerPage.desktop }
+							onChange={ ( value ) => setAttributes( { slidesPerPage: { ...slidesPerPage, desktop: value } } ) }
+							min={ 1 }
+							max={ 10 }
+						/>
+						<RangeControl
+							label={ __( 'Slides per page (Tablet)', 'hm-carousel' ) }
+							value={ slidesPerPage.tablet }
+							onChange={ ( value ) => setAttributes( { slidesPerPage: { ...slidesPerPage, tablet: value } } ) }
+							min={ 1 }
+							max={ 10 }
+						/>
+						<RangeControl
+							label={ __( 'Slides per page (Mobile)', 'hm-carousel' ) }
+							value={ slidesPerPage.mobile }
+							onChange={ ( value ) => setAttributes( { slidesPerPage: { ...slidesPerPage, mobile: value } } ) }
+							min={ 1 }
+							max={ 10 }
+						/>
+						<ToggleControl
+							label={ __( 'Move one slide at a time', 'hm-carousel' ) }
+							checked={ moveSlidesIndividually }
+							onChange={ ( value ) => setAttributes( { moveSlidesIndividually: value } ) }
+						/>
+					</PanelBody>
+				) }
 			</InspectorControls>
 			<div { ...blockProps }>
 				<InnerBlockSlider.Controlled
@@ -158,7 +172,7 @@ function Edit( props ) {
 					parentBlockId={ clientId }
 					currentItemIndex={ currentSlideIndex }
 					setCurrentItemIndex={ setCurrentSlideIndex }
-					perPage={ perPage }
+					perPage={ slidesPerPage.desktop }
 				/>
 				{ hasTabNav && (
 					<TabNav

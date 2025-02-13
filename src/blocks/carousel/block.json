@@ -15,10 +15,6 @@
 			"type": "boolean",
 			"default": true
 		},
-		"perPage": {
-			"type": "number",
-			"default": 1
-		},
 		"type": {
 			"type": "string",
 			"default": "slide"
@@ -53,6 +49,14 @@
 				"desktop": 5,
 				"tablet": 3,
 				"mobile": 2
+			}
+		},
+		"slidesPerPage": {
+			"type": "object",
+			"default": {
+				"desktop": 1,
+				"tablet": 1,
+				"mobile": 1
 			}
 		}
 	},
