@@ -101,20 +101,20 @@ function setupThumbnailCarousel( blockEl, settings ) {
 
 	blockEl
 		.querySelectorAll( '.hm-carousel-slide' )
-		.forEach( ( slideEl ) => {
-			const slideTitle = slideEl.dataset.title;
+		.forEach( ( slideEl, i ) => {
+			const slideTitle = slideEl.dataset.title || 'Slide ' + ( i + 1 );
 
 			const thumbnailSlideEl = document.createElement( 'li' );
 			thumbnailSlideEl.classList.add( 'splide__slide' );
 			thumbnailList.appendChild( thumbnailSlideEl );
 
 			const btnEl = document.createElement( 'button' );
-			btnEl.classList.add( 'hm-carousel__nav-button' );
+			btnEl.classList.add( 'hm-carousel__thumbnails-button' );
 			thumbnailSlideEl.appendChild( btnEl );
 
 			// Container span for styling.
 			const spanEl = document.createElement( 'span' );
-			spanEl.classList.add( 'hm-carousel__nav-button-text' );
+			spanEl.classList.add( 'hm-carousel__thumbnails-button-text' );
 			spanEl.appendChild( document.createTextNode( slideTitle ) );
 
 			btnEl.appendChild( spanEl );
@@ -122,8 +122,9 @@ function setupThumbnailCarousel( blockEl, settings ) {
 			// Thumbnail image.
 			if ( slideEl.dataset.thumbnailImageSrc ) {
 				const imgEl = document.createElement( 'img' );
-				imgEl.classList.add( 'hm-carousel__nav-button-img' );
+				imgEl.classList.add( 'hm-carousel__thumbnails-button-img' );
 				imgEl.setAttribute( 'src', slideEl.dataset.thumbnailImageSrc );
+				imgEl.setAttribute( 'alt', slideTitle );
 				imgEl.setAttribute( 'loading', 'lazy' );
 				btnEl.appendChild( imgEl );
 			}
