@@ -20,7 +20,7 @@ const ALLOWED_BLOCK = 'hm/carousel-slide';
  */
 function Edit( props ) {
 	const { clientId, attributes, setAttributes } = props;
-	const { hasTabNav, hasPagination, hasNavButtons, type, autoplay, interval, speed, easing, moveSlidesIndividually, hasThumbnailPagination, thumbnailCount, slidesPerPage } = attributes;
+	const { hasTabNav, hasPagination, hasNavButtons, type, autoplay, interval, speed, easing, moveSlidesIndividually, hasThumbnailPagination, thumbnailCount, slidesPerPage, thumbnailNavType } = attributes;
 
 	const blockProps = useBlockProps( {
 		className: 'hm-carousel',
@@ -130,6 +130,15 @@ function Edit( props ) {
 							onChange={ ( value ) => setAttributes( { thumbnailCount: { ...thumbnailCount, mobile: value } } ) }
 							min={ 1 }
 							max={ 10 }
+							/>
+						<SelectControl
+							label={ __( 'Thumbnail Navigation Type', 'hm-carousel' ) }
+							value={ thumbnailNavType }
+							options={ [
+								{ label: __( 'Pagination', 'hm-carousel' ), value: 'pagination' },
+								{ label: __( 'Buttons', 'hm-carousel' ), value: 'buttons' },
+							] }
+							onChange={ ( value ) => setAttributes( { thumbnailNavType: value } ) }
 						/>
 					</PanelBody>
 				) }

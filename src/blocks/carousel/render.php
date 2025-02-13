@@ -19,6 +19,7 @@ if ( $p->next_tag( [ 'tag_name' => 'div', 'class_name' => 'hm-carousel' ] ) ) {
 	$p->set_attribute( 'data-has-thumbnail-pagination', $attributes['hasThumbnailPagination'] ? 'true' : 'false' );
 	$p->set_attribute( 'data-thumbnail-count', wp_json_encode( $attributes['thumbnailCount'] ) );
 	$p->set_attribute( 'data-slides-per-page', wp_json_encode( $attributes['slidesPerPage'] ) );
+	$p->set_attribute( 'data-thumbnail-nav-type', $attributes['thumbnailNavType'] );
 }
 
 if ( $p->next_tag( [ 'tag_name' => 'div', 'class_name' => 'hm-carousel__content' ] ) ) {

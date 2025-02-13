@@ -151,19 +151,25 @@ function setupThumbnailCarousel( blockEl, settings ) {
 	// Add to nav.
 	navEl.appendChild( thumbnailEl );
 
+	const slideCount = blockEl.querySelectorAll( '.hm-carousel-slide' ).length;
+
 	const thumbnailSplideConfig = {
 		rewind: true,
-		pagination: false,
+		pagination: slideCount > settings.thumbnailCount.desktop && settings.thumbnailNavType === 'pagination',
+		arrows: slideCount > settings.thumbnailCount.desktop && settings.thumbnailNavType === 'buttons',
 		isNavigation: true,
-		arrows: false,
 		perPage: settings.thumbnailCount.desktop,
 		gap: '1.5rem',
 		breakpoints: {
 			1024: {
 				perPage: settings.thumbnailCount.tablet,
+				pagination: slideCount > settings.thumbnailCount.tablet && settings.thumbnailNavType === 'pagination',
+				arrows: slideCount > settings.thumbnailCount.tablet && settings.thumbnailNavType === 'buttons',
 			},
 			768: {
 				perPage: settings.thumbnailCount.mobile,
+				pagination: slideCount > settings.thumbnailCount.tablet && settings.thumbnailNavType === 'pagination',
+				arrows: slideCount > settings.thumbnailCount.tablet && settings.thumbnailNavType === 'buttons',
 			},
 		},
 	};
@@ -251,6 +257,7 @@ function initCarouselBlock( blockEl ) {
 		hasThumbnailPagination: blockEl.dataset.hasPagination === 'true' && blockEl.dataset.hasThumbnailPagination === 'true',
 		thumbnailCount: JSON.parse(blockEl.dataset.thumbnailCount),
 		slidesPerPage: JSON.parse(blockEl.dataset.slidesPerPage),
+		thumbnailNavType: blockEl.dataset.thumbnailNavType || 'pagination',
 	};
 
 	const carousel = setupCarousel( blockEl, settings );

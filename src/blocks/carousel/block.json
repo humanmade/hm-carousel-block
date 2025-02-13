@@ -58,6 +58,10 @@
 				"tablet": 1,
 				"mobile": 1
 			}
+		},
+		"thumbnailNavType": {
+			"type": "string",
+			"default": "pagination"
 		}
 	},
 	"category": "design",
