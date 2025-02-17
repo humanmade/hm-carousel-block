@@ -56,3 +56,11 @@ This plugin is licensed under the GPL v2 or later. The Splide library used in th
 ## Credits
 
 - [Splide](https://splidejs.com/) - A lightweight, flexible, and accessible slider/carousel library.
+
+## Releasing a new version
+
+To ensure built scripts are included releases should be done from the `release` branch.
+
+Run `npm run release` to update the release branch with the current state of `main`, run build scripts and commit the build files.
+
+From github, create a new release and tag as appropriate. Make sure to set the target branch as `release`.
