@@ -1,0 +1,92 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "hm/carousel",
+  "attributes": {
+    "hasTabNav": {
+      "type": "boolean",
+      "default": false
+    },
+    "hasPagination": {
+      "type": "boolean",
+      "default": false
+    },
+    "hasNavButtons": {
+      "type": "boolean",
+      "default": true
+    },
+    "type": {
+      "type": "string",
+      "default": "slide"
+    },
+    "autoplay": {
+      "type": "boolean",
+      "default": false
+    },
+    "interval": {
+      "type": "number",
+      "default": 3000
+    },
+    "speed": {
+      "type": "number",
+      "default": 800
+    },
+    "easing": {
+      "type": "string",
+      "default": "ease"
+    },
+    "moveSlidesIndividually": {
+      "type": "boolean",
+      "default": false
+    },
+    "hasThumbnailPagination": {
+      "type": "boolean",
+      "default": false
+    },
+    "thumbnailCount": {
+      "type": "object",
+      "default": {
+        "desktop": 5,
+        "tablet": 3,
+        "mobile": 2
+      }
+    },
+    "slidesPerPage": {
+      "type": "object",
+      "default": {
+        "desktop": 1,
+        "tablet": 1,
+        "mobile": 1
+      }
+    },
+    "thumbnailNavType": {
+      "type": "string",
+      "default": "pagination"
+    }
+  },
+  "category": "design",
+  "description": "Preformatted block grouping for a carousel layout block.",
+  "editorScript": "file:./index.js",
+  "editorStyle": "file:./index.css",
+  "icon": "slides",
+  "keywords": [
+    "carousel",
+    "slider",
+    "roller"
+  ],
+  "render": "file:./render.php",
+  "supports": {
+    "align": [
+      "full",
+      "wide"
+    ],
+    "spacing": {
+      "margin": true
+    }
+  },
+  "textdomain": "hm-carousel-block",
+  "title": "Carousel",
+  "version": "0.1.0",
+  "viewScript": "file:./view.js",
+  "style": "file:./view.css"
+}
