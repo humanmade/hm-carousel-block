@@ -25,17 +25,27 @@ function setupCarousel( blockEl, settings ) {
 	const listEl = blockEl.querySelector(
 		'.hm-carousel__content'
 	);
-	listEl.classList.add( 'splide__list' );
+
+	const isQueryLoop = blockEl.classList.contains( 'wp-block-query' ) || blockEl.querySelector( '.wp-block-post-template' );
+	const queryLoopList = isQueryLoop ? blockEl.querySelector( '.wp-block-post-template' ) : null;
+
+	const targetList = queryLoopList || listEl;
+	targetList.classList.add( 'splide__list' );
 
 	const trackEl = document.createElement( 'div' );
 	trackEl.classList.add( 'splide__track' );
 
-	// Wrap the target element with the container element
-	blockEl.appendChild( trackEl );
-	trackEl.appendChild( listEl );
+	if ( isQueryLoop ) {
+		const parent = targetList.parentNode;
+		parent.insertBefore( trackEl, targetList );
+		trackEl.appendChild( targetList );
+	} else {
+		blockEl.appendChild( trackEl );
+		trackEl.appendChild( targetList );
+	}
 
 	const slides = blockEl.querySelectorAll(
-		'.hm-carousel-slide'
+		isQueryLoop ? '.wp-block-post' : '.hm-carousel-slide'
 	);
 	slides.forEach( ( slide ) => slide.classList.add( 'splide__slide' ) );
 
@@ -99,8 +109,12 @@ function setupThumbnailCarousel( blockEl, settings ) {
 	thumbnailList.classList.add( 'splide__list' );
 	thumbnailTrack.appendChild( thumbnailList );
 
+	// Support both carousel slides and Query Loop posts.
+	const isQueryLoop = blockEl.classList.contains( 'wp-block-query' ) || blockEl.querySelector( '.wp-block-post-template' );
+	const slideSelector = isQueryLoop ? '.wp-block-post' : '.hm-carousel-slide';
+
 	blockEl
-		.querySelectorAll( '.hm-carousel-slide' )
+		.querySelectorAll( slideSelector )
 		.forEach( ( slideEl, i ) => {
 			const slideTitle = slideEl.dataset.title || 'Slide ' + ( i + 1 );
 
@@ -151,7 +165,7 @@ function setupThumbnailCarousel( blockEl, settings ) {
 	// Add to nav.
 	navEl.appendChild( thumbnailEl );
 
-	const slideCount = blockEl.querySelectorAll( '.hm-carousel-slide' ).length;
+	const slideCount = blockEl.querySelectorAll( slideSelector ).length;
 
 	const thumbnailSplideConfig = {
 		rewind: true,
