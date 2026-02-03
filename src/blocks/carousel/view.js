@@ -30,6 +30,18 @@ function setupCarousel( blockEl, settings ) {
 	const queryLoopList = isQueryLoop ? blockEl.querySelector( '.wp-block-post-template' ) : null;
 
 	const targetList = queryLoopList || listEl;
+
+	// Count slides first to determine if carousel should be initialized
+	const slideSelector = isQueryLoop ? '.wp-block-post' : '.hm-carousel-slide';
+	const slides = blockEl.querySelectorAll( slideSelector );
+	
+	// Don't initialize carousel if there's only 1 slide or none
+	if ( slides.length < 2 ) {
+		return null;
+	}
+
+	// Now proceed with carousel setup
+	blockEl.classList.add( 'splide' );
 	targetList.classList.add( 'splide__list' );
 
 	const trackEl = document.createElement( 'div' );
@@ -44,9 +56,6 @@ function setupCarousel( blockEl, settings ) {
 		trackEl.appendChild( targetList );
 	}
 
-	const slides = blockEl.querySelectorAll(
-		isQueryLoop ? '.wp-block-post' : '.hm-carousel-slide'
-	);
 	slides.forEach( ( slide ) => slide.classList.add( 'splide__slide' ) );
 
 	setupNav( blockEl, settings );
@@ -275,6 +284,11 @@ function initCarouselBlock( blockEl ) {
 	};
 
 	const carousel = setupCarousel( blockEl, settings );
+
+	// If carousel returned null (less than 2 slides), don't initialize
+	if ( ! carousel ) {
+		return;
+	}
 
 	if ( settings.hasThumbnailPagination ) {
 		const thumbnailCarousel = setupThumbnailCarousel( blockEl, settings );
