@@ -4,13 +4,39 @@ import { __ } from '@wordpress/i18n';
 import {
 	useBlockProps,
 	InspectorControls,
-	useInnerBlocksProps
 } from '@wordpress/block-editor';
 import { PanelBody, ToggleControl, RangeControl, SelectControl, Notice } from '@wordpress/components';
 import TabNav from './components/tab-nav';
 
 const SLIDE_LIMIT = 100;
 const ALLOWED_BLOCK = 'hm/carousel-slide';
+const ALLOWED_BLOCKS_ARTICLES = [ 'core/query' ];
+
+// Templates for different layout types
+const CAROUSEL_TEMPLATE = [ [ 'hm/carousel-slide' ] ];
+const ARTICLES_CAROUSEL_TEMPLATE = [
+	[
+		'core/query',
+		{
+			query: {
+				perPage: 6,
+				pages: 0,
+				offset: 0,
+				postType: 'post',
+				order: 'desc',
+				orderBy: 'date',
+				author: '',
+				search: '',
+				exclude: [],
+				sticky: '',
+				inherit: false,
+			},
+		},
+		[
+			[ 'core/post-template' ],
+		],
+	],
+];
 
 /**
  * Provide an interface for editing the block.
@@ -20,14 +46,16 @@ const ALLOWED_BLOCK = 'hm/carousel-slide';
  */
 function Edit( props ) {
 	const { clientId, attributes, setAttributes } = props;
-	const { hasTabNav, hasPagination, hasNavButtons, type, autoplay, interval, speed, easing, moveSlidesIndividually, hasThumbnailPagination, thumbnailCount, slidesPerPage, thumbnailNavType } = attributes;
+	const { layout, hasTabNav, hasPagination, hasNavButtons, type, autoplay, interval, speed, easing, moveSlidesIndividually, hasThumbnailPagination, thumbnailCount, slidesPerPage, thumbnailNavType } = attributes;
+
+	const isArticlesCarousel = layout === 'articles-carousel';
+	
+	// Determine allowed blocks and template based on layout
+	const allowedBlocks = isArticlesCarousel ? ALLOWED_BLOCKS_ARTICLES : ALLOWED_BLOCK;
+	const template = isArticlesCarousel ? ARTICLES_CAROUSEL_TEMPLATE : CAROUSEL_TEMPLATE;
 
 	const blockProps = useBlockProps( {
 		className: 'hm-carousel',
-	} );
-
-	const innerBlocksProps = useInnerBlocksProps( {
-		className: 'hm-carousel__content',
 	} );
 
 	const [ currentSlideIndex, setCurrentSlideIndex ] = useState( 0 );
@@ -177,13 +205,14 @@ function Edit( props ) {
 			</InspectorControls>
 			<div { ...blockProps }>
 				<InnerBlockSlider.Controlled
-					allowedBlock={ ALLOWED_BLOCK }
+					allowedBlock={ isArticlesCarousel ? allowedBlocks : ALLOWED_BLOCK }
 					className={ 'hm-carousel__content' }
 					slideLimit={ SLIDE_LIMIT }
 					parentBlockId={ clientId }
 					currentItemIndex={ currentSlideIndex }
 					setCurrentItemIndex={ setCurrentSlideIndex }
 					perPage={ slidesPerPage.desktop }
+					template={ template }
 				/>
 				{ hasTabNav && (
 					<TabNav
