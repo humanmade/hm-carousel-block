@@ -3,6 +3,10 @@
 	"apiVersion": 3,
 	"name": "hm/carousel",
 	"attributes": {
+		"layout": {
+			"type": "string",
+			"default": "carousel"
+		},
 		"hasTabNav": {
 			"type": "boolean",
 			"default": false
