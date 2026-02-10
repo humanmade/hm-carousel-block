@@ -19,9 +19,6 @@ function getBlockStyle( blockEl ) {
  * @param {Element} blockEl
  */
 function setupCarousel( blockEl, settings ) {
-	// Setup splide structure.
-	blockEl.classList.add( 'splide' );
-
 	const carouselContentEl = blockEl.querySelector(
 		'.hm-carousel__content'
 	);
