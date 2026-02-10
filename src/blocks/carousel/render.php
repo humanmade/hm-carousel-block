@@ -1,51 +1,13 @@
 <?php
 /**
- *  Adding classes in PHP prevents FOUC.
+ * Carousel Block - Render Template.
+ *
+ * The view.js script checks for minimum slide count before initializing.
  */
 
-use const HM\CarouselBlock\PLUGIN_PATH;
-
-// Count slides using simple string occurrence counting (safe, no loops)
-$slide_count = 0;
-
-// Check for Query Loop first (wp-block-post class)
-if ( strpos( $content, 'wp-block-post' ) !== false ) {
-	// Count <li class="wp-block-post tags
-	preg_match_all( '/<li[^>]*class="[^"]*\bwp-block-post\b[^"]*"/', $content, $matches );
-	$slide_count = count( $matches[0] );
-}
-
-// If no Query Loop posts, check for regular carousel slides
-if ( $slide_count === 0 ) {
-	// Count <div class="...hm-carousel-slide..." tags
-	preg_match_all( '/<div[^>]*class="[^"]*\bhm-carousel-slide\b[^"]*"/', $content, $matches );
-	$slide_count = count( $matches[0] );
-}
-
-// Only enqueue scripts if there are 2 or more slides
-if ( $slide_count >= 2 ) {
-	wp_enqueue_script( 'splide' );
-	wp_enqueue_style( 'splide' );
-
-	$asset_file = include PLUGIN_PATH . '/build/blocks/carousel/view.asset.php';
-	wp_register_script(
-		'hm-carousel-view-script',
-		plugins_url( 'build/blocks/carousel/view.js', PLUGIN_PATH . '/hm-carousel-block.php' ),
-		array_merge( $asset_file['dependencies'] ?? [], [ 'splide' ] ),
-		$asset_file['version'] ?? '1.0.0',
-		true
-	);
-
-	wp_register_style(
-		'hm-carousel-style',
-		plugins_url( 'build/blocks/carousel/view.css', PLUGIN_PATH . '/hm-carousel-block.php' ),
-		[ 'splide' ],
-		$asset_file['version'] ?? '1.0.0'
-	);
-
-	wp_enqueue_script( 'hm-carousel-view-script' );
-	wp_enqueue_style( 'hm-carousel-style' );
-}
+// Always enqueue Splide library (view.js depends on it)
+wp_enqueue_script( 'splide' );
+wp_enqueue_style( 'splide' );
 
 // Add data attributes for carousel settings
 $p = new \WP_HTML_Tag_Processor( $content );
