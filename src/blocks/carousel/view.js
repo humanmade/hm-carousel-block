@@ -44,14 +44,16 @@ function setupCarousel( blockEl, settings ) {
 	blockEl.classList.add( 'splide' );
 	targetList.classList.add( 'splide__list' );
 
-	const trackEl = document.createElement( 'div' );
-	trackEl.classList.add( 'splide__track' );
-
 	if ( isQueryLoop ) {
-		const parent = targetList.parentNode;
-		parent.insertBefore( trackEl, targetList );
-		trackEl.appendChild( targetList );
+		// Add splide__track class to the query block wrapper
+		const queryBlockEl = blockEl.querySelector( '.wp-block-query' );
+		if ( queryBlockEl ) {
+			queryBlockEl.classList.add( 'splide__track' );
+		}
 	} else {
+		// For regular carousel, wrap content in track element
+		const trackEl = document.createElement( 'div' );
+		trackEl.classList.add( 'splide__track' );
 		blockEl.appendChild( trackEl );
 		trackEl.appendChild( targetList );
 	}
