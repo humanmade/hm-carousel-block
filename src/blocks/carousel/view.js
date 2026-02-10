@@ -28,12 +28,10 @@ function setupCarousel( blockEl, settings ) {
 
 	const targetList = postTemplateEl || carouselContentEl;
 
-	// Count slides first to determine if carousel should be initialized
-	const slideSelector = isQueryLoop ? '.wp-block-post' : '.hm-carousel-slide';
-	const slides = blockEl.querySelectorAll( slideSelector );
-	
 	// Don't initialize carousel if there's only 1 slide or none
-	if ( slides.length < 2 ) {
+	const slideCount = targetList.childElementCount;
+	
+	if ( slideCount < 2 ) {
 		return null;
 	}
 
@@ -54,6 +52,9 @@ function setupCarousel( blockEl, settings ) {
 		blockEl.appendChild( trackEl );
 		trackEl.appendChild( targetList );
 	}
+
+	const slideSelector = isQueryLoop ? '.wp-block-post' : '.hm-carousel-slide';
+	const slides = targetList.querySelectorAll( slideSelector );
 
 	slides.forEach( ( slide ) => slide.classList.add( 'splide__slide' ) );
 
