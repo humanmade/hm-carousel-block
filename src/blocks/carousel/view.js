@@ -28,10 +28,8 @@ function setupCarousel( blockEl, settings ) {
 
 	const targetList = postTemplateEl || carouselContentEl;
 
-	// Don't initialize carousel if there's only 1 slide or none
-	const slideCount = targetList.childElementCount;
-	
-	if ( slideCount < 2 ) {
+	// Don't initialize carousel if target list doesn't exist or has less than 2 slides
+	if ( ! targetList || targetList.childElementCount < 2 ) {
 		return null;
 	}
 
@@ -305,6 +303,11 @@ function initCarouselBlock( blockEl ) {
  * Kick it all off.
  */
 function bootstrap() {
+	// Check if Splide is available
+	if ( typeof window.Splide === 'undefined' ) {
+		console.error( 'Splide library not loaded. Carousel cannot be initialized.' );
+		return;
+	}
 	document
 		.querySelectorAll( '.hm-carousel' )
 		.forEach( ( el ) => initCarouselBlock( el ) );

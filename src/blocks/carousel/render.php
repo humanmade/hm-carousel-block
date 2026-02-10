@@ -1,8 +1,6 @@
 <?php
 /**
- * Carousel Block - Render Template.
- *
- * The view.js script checks for minimum slide count before initializing.
+ * Adding classes in PHP prevents FOUC.
  */
 
 // Always enqueue Splide library (view.js depends on it)
