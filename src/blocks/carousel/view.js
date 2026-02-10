@@ -22,14 +22,14 @@ function setupCarousel( blockEl, settings ) {
 	// Setup splide structure.
 	blockEl.classList.add( 'splide' );
 
-	const listEl = blockEl.querySelector(
+	const carouselContentEl = blockEl.querySelector(
 		'.hm-carousel__content'
 	);
 
 	const isQueryLoop = blockEl.classList.contains( 'wp-block-query' ) || blockEl.querySelector( '.wp-block-post-template' );
 	const queryLoopList = isQueryLoop ? blockEl.querySelector( '.wp-block-post-template' ) : null;
 
-	const targetList = queryLoopList || listEl;
+	const targetList = queryLoopList || carouselContentEl;
 
 	// Count slides first to determine if carousel should be initialized
 	const slideSelector = isQueryLoop ? '.wp-block-post' : '.hm-carousel-slide';
