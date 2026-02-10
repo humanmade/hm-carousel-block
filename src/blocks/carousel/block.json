@@ -84,5 +84,6 @@
 	"textdomain": "hm-carousel-block",
 	"title": "Carousel",
 	"version": "0.1.0",
-	"viewScript": "file:./view.js"
+	"viewScript": "file:./view.js",
+	"style": "file:./view.css"
 }
