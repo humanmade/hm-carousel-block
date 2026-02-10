@@ -26,10 +26,10 @@ function setupCarousel( blockEl, settings ) {
 		'.hm-carousel__content'
 	);
 
-	const isQueryLoop = blockEl.classList.contains( 'wp-block-query' ) || blockEl.querySelector( '.wp-block-post-template' );
-	const queryLoopList = isQueryLoop ? blockEl.querySelector( '.wp-block-post-template' ) : null;
+	const postTemplateEl = blockEl.querySelector( '.wp-block-post-template' );
+	const isQueryLoop = !! postTemplateEl;
 
-	const targetList = queryLoopList || carouselContentEl;
+	const targetList = postTemplateEl || carouselContentEl;
 
 	// Count slides first to determine if carousel should be initialized
 	const slideSelector = isQueryLoop ? '.wp-block-post' : '.hm-carousel-slide';
@@ -119,7 +119,7 @@ function setupThumbnailCarousel( blockEl, settings ) {
 	thumbnailTrack.appendChild( thumbnailList );
 
 	// Support both carousel slides and Query Loop posts.
-	const isQueryLoop = blockEl.classList.contains( 'wp-block-query' ) || blockEl.querySelector( '.wp-block-post-template' );
+	const isQueryLoop = !! blockEl.querySelector( '.wp-block-post-template' );
 	const slideSelector = isQueryLoop ? '.wp-block-post' : '.hm-carousel-slide';
 
 	blockEl
