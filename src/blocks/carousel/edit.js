@@ -205,7 +205,7 @@ function Edit( props ) {
 			</InspectorControls>
 			<div { ...blockProps }>
 				<InnerBlockSlider.Controlled
-					allowedBlock={ isArticlesCarousel ? allowedBlocks : ALLOWED_BLOCK }
+					allowedBlock={ allowedBlocks }
 					className={ 'hm-carousel__content' }
 					slideLimit={ SLIDE_LIMIT }
 					parentBlockId={ clientId }
