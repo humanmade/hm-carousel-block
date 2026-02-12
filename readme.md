@@ -9,6 +9,7 @@ HM Carousel Block is a lightweight WordPress plugin designed to add a carousel b
 - Accessible and responsive design
 - Easy to use and customize
 - Allows you to put any blocks or patterns in carousel slides
+- Supports using the Query Loop block to create a carousel of posts
 - Supports various navigation types (button, pagination, and thumbnails)
 - Bring your own styles. We only load the minimal core splide CSS needed to function. You can style everything else as you wish. More info below.
 
