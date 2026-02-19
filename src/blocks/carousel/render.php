@@ -3,10 +3,6 @@
  * Adding classes in PHP prevents FOUC.
  */
 
-// Always enqueue Splide library (view.js depends on it)
-wp_enqueue_script( 'splide' );
-wp_enqueue_style( 'splide' );
-
 // Add data attributes for carousel settings
 $p = new \WP_HTML_Tag_Processor( $content );
 
