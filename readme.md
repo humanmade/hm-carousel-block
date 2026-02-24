@@ -50,6 +50,33 @@ wp_enqueue_block_style(
 );
 ```
 
+## Release Process
+
+Merges to `main` will automatically [build](https://github.com/humanmade/hm-carousel-block/actions/workflows/build-release-branch.yml) to the `release` branch. A project may be set up to track the `release` branch using [composer](http://getcomposer.org/) to pull in the latest built beta version.
+
+Commits on the `release` branch may be tagged for installation via [packagist](https://packagist.org/packages/humanmade/hm-carousel-block) and marked as releases in GitHub for manual download using a [manually-dispatched "Tag and Release" GH Actions workflow](https://github.com/humanmade/hm-carousel-block/actions/workflows/tag-and-release.yml).
+
+To tag a new release,
+
+1. Review the unreleased features in the [Changelog](./CHANGELOG.md) and choose the target version number for the next release using [semantic versioning](https://semver.org/)
+2. Checkout a `prepare-v#.#.#` branch. In that branch,
+   - Add a new header into [CHANGELOG.md](./CHANGELOG.md) for any unreleased features
+   - Bump the version number in the [hm-hm-carousel-block-block.php](./hm-hm-carousel-block-block.php) file's PHPDoc header
+3. Open a pull request from your branch titled "Prepare release v#.#.#"
+4. Review and merge your "Prepare release" pull request
+5. Wait for the `release` branch to [update](https://github.com/humanmade/hm-carousel-block/actions/workflows/build-release-branch.yml) with the build that includes the new version number
+6. On the ["Tag and Release" GH Action page](https://github.com/humanmade/hm-carousel-block/actions/workflows/tag-and-release.yml)],
+   - Click the "Run workflow" button in the "workflow_dispatch" notification banner (see screenshot below)
+   - Fill out the "Version tag" field with your target version number
+	  - This version must match the version in `hm-hm-carousel-block-block.php` and your newest Changelog section
+	  - Use the format `v#.#.#` for your version tag
+   - Leave the "Branch to tag" field as `release` (we will add the tag on the release branch containing the latest built code)
+   - Click "Run workflow"
+
+![Screenshot of Run workflow dropdown form being filled out](./.github/docs/release-tagging-action.jpg)
+
+Once the workflow completes, your new version should be [tagged](https://github.com/humanmade/hm-carousel-block/tags) and available in the list of [releases](https://github.com/humanmade/hm-carousel-block/releases)
+
 ## License
 
 This plugin is licensed under the GPL v2 or later. The Splide library used in this plugin is licensed under the MIT License.
@@ -57,11 +84,3 @@ This plugin is licensed under the GPL v2 or later. The Splide library used in th
 ## Credits
 
 - [Splide](https://splidejs.com/) - A lightweight, flexible, and accessible slider/carousel library.
-
-## Releasing a new version
-
-To ensure built scripts are included releases should be done from the `release` branch.
-
-Run `npm run release` to update the release branch with the current state of `main`, run build scripts and commit the build files.
-
-From github, create a new release and tag as appropriate. Make sure to set the target branch as `release`.
