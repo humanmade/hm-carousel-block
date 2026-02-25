@@ -19,24 +19,41 @@ function getBlockStyle( blockEl ) {
  * @param {Element} blockEl
  */
 function setupCarousel( blockEl, settings ) {
-	// Setup splide structure.
-	blockEl.classList.add( 'splide' );
-
-	const listEl = blockEl.querySelector(
+	const carouselContentEl = blockEl.querySelector(
 		'.hm-carousel__content'
 	);
-	listEl.classList.add( 'splide__list' );
 
-	const trackEl = document.createElement( 'div' );
-	trackEl.classList.add( 'splide__track' );
+	const postTemplateEl = blockEl.querySelector( '.wp-block-post-template' );
+	const isQueryLoop = !! postTemplateEl;
 
-	// Wrap the target element with the container element
-	blockEl.appendChild( trackEl );
-	trackEl.appendChild( listEl );
+	const targetList = postTemplateEl || carouselContentEl;
 
-	const slides = blockEl.querySelectorAll(
-		'.hm-carousel-slide'
-	);
+	// Don't initialize carousel if target list doesn't exist or has less than 2 slides
+	if ( ! targetList || targetList.childElementCount < 2 ) {
+		return null;
+	}
+
+	// Now proceed with carousel setup
+	blockEl.classList.add( 'splide' );
+	targetList.classList.add( 'splide__list' );
+
+	if ( isQueryLoop ) {
+		// Add splide__track class to the query block wrapper
+		const queryBlockEl = blockEl.querySelector( '.wp-block-query' );
+		if ( queryBlockEl ) {
+			queryBlockEl.classList.add( 'splide__track' );
+		}
+	} else {
+		// For regular carousel, wrap content in track element
+		const trackEl = document.createElement( 'div' );
+		trackEl.classList.add( 'splide__track' );
+		blockEl.appendChild( trackEl );
+		trackEl.appendChild( targetList );
+	}
+
+	const slideSelector = isQueryLoop ? '.wp-block-post' : '.hm-carousel-slide';
+	const slides = targetList.querySelectorAll( slideSelector );
+
 	slides.forEach( ( slide ) => slide.classList.add( 'splide__slide' ) );
 
 	setupNav( blockEl, settings );
@@ -99,8 +116,12 @@ function setupThumbnailCarousel( blockEl, settings ) {
 	thumbnailList.classList.add( 'splide__list' );
 	thumbnailTrack.appendChild( thumbnailList );
 
+	// Support both carousel slides and Query Loop posts.
+	const isQueryLoop = !! blockEl.querySelector( '.wp-block-post-template' );
+	const slideSelector = isQueryLoop ? '.wp-block-post' : '.hm-carousel-slide';
+
 	blockEl
-		.querySelectorAll( '.hm-carousel-slide' )
+		.querySelectorAll( slideSelector )
 		.forEach( ( slideEl, i ) => {
 			const slideTitle = slideEl.dataset.title || 'Slide ' + ( i + 1 );
 
@@ -151,7 +172,7 @@ function setupThumbnailCarousel( blockEl, settings ) {
 	// Add to nav.
 	navEl.appendChild( thumbnailEl );
 
-	const slideCount = blockEl.querySelectorAll( '.hm-carousel-slide' ).length;
+	const slideCount = blockEl.querySelectorAll( slideSelector ).length;
 
 	const thumbnailSplideConfig = {
 		rewind: true,
@@ -262,6 +283,11 @@ function initCarouselBlock( blockEl ) {
 
 	const carousel = setupCarousel( blockEl, settings );
 
+	// If carousel returned null (less than 2 slides), don't initialize
+	if ( ! carousel ) {
+		return;
+	}
+
 	if ( settings.hasThumbnailPagination ) {
 		const thumbnailCarousel = setupThumbnailCarousel( blockEl, settings );
 		carousel.sync( thumbnailCarousel );
@@ -277,6 +303,11 @@ function initCarouselBlock( blockEl ) {
  * Kick it all off.
  */
 function bootstrap() {
+	// Check if Splide is available
+	if ( typeof window.Splide === 'undefined' ) {
+		console.error( 'Splide library not loaded. Carousel cannot be initialized.' );
+		return;
+	}
 	document
 		.querySelectorAll( '.hm-carousel' )
 		.forEach( ( el ) => initCarouselBlock( el ) );

@@ -9,6 +9,7 @@ HM Carousel Block is a lightweight WordPress plugin designed to add a carousel b
 - Accessible and responsive design
 - Easy to use and customize
 - Allows you to put any blocks or patterns in carousel slides
+- Supports using the Query Loop block to create a carousel of posts
 - Supports various navigation types (button, pagination, and thumbnails)
 - Bring your own styles. We only load the minimal core splide CSS needed to function. You can style everything else as you wish. More info below.
 
@@ -48,6 +49,33 @@ wp_enqueue_block_style(
 	]
 );
 ```
+
+## Release Process
+
+Merges to `main` will automatically [build](https://github.com/humanmade/hm-carousel-block/actions/workflows/build-release-branch.yml) to the `release` branch. A project may be set up to track the `release` branch using [composer](http://getcomposer.org/) to pull in the latest built beta version.
+
+Commits on the `release` branch may be tagged for installation via [packagist](https://packagist.org/packages/humanmade/hm-carousel-block) and marked as releases in GitHub for manual download using a [manually-dispatched "Tag and Release" GH Actions workflow](https://github.com/humanmade/hm-carousel-block/actions/workflows/tag-and-release.yml).
+
+To tag a new release,
+
+1. Review the unreleased features in the [Changelog](./CHANGELOG.md) and choose the target version number for the next release using [semantic versioning](https://semver.org/)
+2. Checkout a `prepare-v#.#.#` branch. In that branch,
+   - Add a new header into [CHANGELOG.md](./CHANGELOG.md) for any unreleased features
+   - Bump the version number in the [hm-carousel-block.php](./hm-carousel-block.php) file's PHPDoc header
+3. Open a pull request from your branch titled "Prepare release v#.#.#"
+4. Review and merge your "Prepare release" pull request
+5. Wait for the `release` branch to [update](https://github.com/humanmade/hm-carousel-block/actions/workflows/build-release-branch.yml) with the build that includes the new version number
+6. On the ["Tag and Release" GH Action page](https://github.com/humanmade/hm-carousel-block/actions/workflows/tag-and-release.yml)],
+   - Click the "Run workflow" button in the "workflow_dispatch" notification banner (see screenshot below)
+   - Fill out the "Version tag" field with your target version number
+	  - This version must match the version in `hm-carousel-block.php` and your newest Changelog section
+	  - Use the format `v#.#.#` for your version tag
+   - Leave the "Branch to tag" field as `release` (we will add the tag on the release branch containing the latest built code)
+   - Click "Run workflow"
+
+![Screenshot of Run workflow dropdown form being filled out](./.github/docs/release-tagging-action.jpg)
+
+Once the workflow completes, your new version should be [tagged](https://github.com/humanmade/hm-carousel-block/tags) and available in the list of [releases](https://github.com/humanmade/hm-carousel-block/releases)
 
 ## License
 

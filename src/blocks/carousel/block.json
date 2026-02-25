@@ -3,6 +3,10 @@
 	"apiVersion": 3,
 	"name": "hm/carousel",
 	"attributes": {
+		"layout": {
+			"type": "string",
+			"default": "carousel"
+		},
 		"hasTabNav": {
 			"type": "boolean",
 			"default": false
@@ -80,6 +84,6 @@
 	"textdomain": "hm-carousel-block",
 	"title": "Carousel",
 	"version": "0.1.0",
-	"viewScript": "file:./view.js",
-	"style": "file:./view.css"
+	"viewScript": [ "file:./view.js", "splide" ],
+	"style": [ "file:./view.css", "splide" ]
 }
