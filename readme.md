@@ -68,7 +68,7 @@ To tag a new release,
 6. On the ["Tag and Release" GH Action page](https://github.com/humanmade/hm-carousel-block/actions/workflows/tag-and-release.yml)],
    - Click the "Run workflow" button in the "workflow_dispatch" notification banner (see screenshot below)
    - Fill out the "Version tag" field with your target version number
-	  - This version must match the version in `hm-hm-carousel-block-block.php` and your newest Changelog section
+	  - This version must match the version in `hm-carousel-block.php` and your newest Changelog section
 	  - Use the format `v#.#.#` for your version tag
    - Leave the "Branch to tag" field as `release` (we will add the tag on the release branch containing the latest built code)
    - Click "Run workflow"
