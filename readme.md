@@ -61,7 +61,7 @@ To tag a new release,
 1. Review the unreleased features in the [Changelog](./CHANGELOG.md) and choose the target version number for the next release using [semantic versioning](https://semver.org/)
 2. Checkout a `prepare-v#.#.#` branch. In that branch,
    - Add a new header into [CHANGELOG.md](./CHANGELOG.md) for any unreleased features
-   - Bump the version number in the [hm-hm-carousel-block-block.php](./hm-hm-carousel-block-block.php) file's PHPDoc header
+   - Bump the version number in the [hm-carousel-block.php](./hm-carousel-block.php) file's PHPDoc header
 3. Open a pull request from your branch titled "Prepare release v#.#.#"
 4. Review and merge your "Prepare release" pull request
 5. Wait for the `release` branch to [update](https://github.com/humanmade/hm-carousel-block/actions/workflows/build-release-branch.yml) with the build that includes the new version number
