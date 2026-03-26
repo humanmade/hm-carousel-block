@@ -46,10 +46,10 @@ const ARTICLES_CAROUSEL_TEMPLATE = [
  */
 function Edit( props ) {
 	const { clientId, attributes, setAttributes } = props;
-	const { layout, hasTabNav, hasPagination, hasNavButtons, type, autoplay, interval, speed, easing, moveSlidesIndividually, hasThumbnailPagination, thumbnailCount, slidesPerPage, thumbnailNavType } = attributes;
+	const { layout, hasTabNav, hasPagination, hasNavButtons, type, autoplay, interval, speed, easing, moveSlidesIndividually, hasThumbnailPagination, thumbnailCount, slidesPerPage, thumbnailNavType, arrowPosition } = attributes;
 
 	const isArticlesCarousel = layout === 'articles-carousel';
-	
+
 	// Determine allowed blocks and template based on layout
 	const allowedBlocks = isArticlesCarousel ? ALLOWED_BLOCKS_ARTICLES : ALLOWED_BLOCK;
 	const template = isArticlesCarousel ? ARTICLES_CAROUSEL_TEMPLATE : CAROUSEL_TEMPLATE;
@@ -80,6 +80,19 @@ function Edit( props ) {
 						label={ __( 'Show Navigation Buttons', 'hm-carousel' ) }
 						checked={ hasNavButtons }
 						onChange={ ( value ) => setAttributes( { hasNavButtons: value } ) }
+					/>
+					<SelectControl
+						label={ __( 'Arrow Position', 'hm-carousel' ) }
+						value={ arrowPosition || 'default' }
+						options={ [
+							{ label: __( 'Default', 'hm-carousel' ), value: 'default' },
+							{ label: __( 'Center', 'hm-carousel' ), value: 'center' },
+							{ label: __( 'Corner Top Left', 'hm-carousel' ), value: 'corner-top-left' },
+							{ label: __( 'Corner Top Right', 'hm-carousel' ), value: 'corner-top-right' },
+							{ label: __( 'Corner Bottom Left', 'hm-carousel' ), value: 'corner-bottom-left' },
+							{ label: __( 'Corner Bottom Right', 'hm-carousel' ), value: 'corner-bottom-right' },
+						] }
+						onChange={ ( value ) => setAttributes( { arrowPosition: value } ) }
 					/>
 				</PanelBody>
 				<PanelBody title={ __( 'Carousel Animation Settings', 'hm-carousel' ) }>

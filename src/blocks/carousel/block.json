@@ -63,10 +63,14 @@
 				"mobile": 1
 			}
 		},
-		"thumbnailNavType": {
-			"type": "string",
-			"default": "pagination"
-		}
+		   "thumbnailNavType": {
+			   "type": "string",
+			   "default": "pagination"
+		   },
+		   "arrowPosition": {
+			   "type": "string",
+			   "default": "default"
+		   }
 	},
 	"category": "design",
 	"description": "Preformatted block grouping for a carousel layout block.",
