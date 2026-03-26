@@ -93,7 +93,6 @@ function Edit( props ) {
 							{ label: __( 'Corner Bottom Right', 'hm-carousel' ), value: 'corner-bottom-right' },
 						] }
 						onChange={ ( value ) => setAttributes( { arrowPosition: value } ) }
-						help={ __( 'Controls the position of the navigation arrows. Corners: only one arrow will be shown.', 'hm-carousel' ) }
 					/>
 				</PanelBody>
 				<PanelBody title={ __( 'Carousel Animation Settings', 'hm-carousel' ) }>
