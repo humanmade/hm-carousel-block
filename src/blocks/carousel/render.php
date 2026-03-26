@@ -20,6 +20,9 @@ if ( $p->next_tag( [ 'tag_name' => 'div', 'class_name' => 'hm-carousel' ] ) ) {
 	$p->set_attribute( 'data-thumbnail-count', wp_json_encode( $attributes['thumbnailCount'] ) );
 	$p->set_attribute( 'data-slides-per-page', wp_json_encode( $attributes['slidesPerPage'] ) );
 	$p->set_attribute( 'data-thumbnail-nav-type', $attributes['thumbnailNavType'] );
+	if ( isset( $attributes['arrowPosition'] ) && $attributes['arrowPosition'] && $attributes['arrowPosition'] !== 'default' ) {
+		$p->set_attribute( 'data-arrow-position', $attributes['arrowPosition'] );
+	}
 }
 
 echo $p->get_updated_html(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
