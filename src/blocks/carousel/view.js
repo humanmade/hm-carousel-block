@@ -37,19 +37,12 @@ function setupCarousel( blockEl, settings ) {
 	blockEl.classList.add( 'splide' );
 	targetList.classList.add( 'splide__list' );
 
-	if ( isQueryLoop ) {
-		// Add splide__track class to the query block wrapper
-		const queryBlockEl = blockEl.querySelector( '.wp-block-query' );
-		if ( queryBlockEl ) {
-			queryBlockEl.classList.add( 'splide__track' );
-		}
-	} else {
-		// For regular carousel, wrap content in track element
-		const trackEl = document.createElement( 'div' );
-		trackEl.classList.add( 'splide__track' );
-		blockEl.appendChild( trackEl );
-		trackEl.appendChild( targetList );
-	}
+	// Splide requires splide__track to be a DIRECT child of .splide.
+	// For both cases, create a new track element and move the list inside it.
+	const trackEl = document.createElement( 'div' );
+	trackEl.classList.add( 'splide__track' );
+	blockEl.appendChild( trackEl );
+	trackEl.appendChild( targetList );
 
 	const slideSelector = isQueryLoop ? '.wp-block-post' : '.hm-carousel-slide';
 	const slides = targetList.querySelectorAll( slideSelector );
