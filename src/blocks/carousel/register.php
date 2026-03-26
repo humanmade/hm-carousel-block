@@ -13,9 +13,10 @@ use const HM\CarouselBlock\PLUGIN_PATH;
  * @return void
  */
 function bootstrap(): void {
-	add_action( 'init', __NAMESPACE__ . '\\register_block' );
-	add_action( 'wp_enqueue_scripts', __NAMESPACE__ . '\\register_vendor_scripts' );
-	add_action( 'wp_enqueue_scripts', __NAMESPACE__ . '\\modify_block_scripts', 100 );
+	// Register vendor scripts before block registration to ensure dependencies are available.
+	add_action( 'init', __NAMESPACE__ . '\register_vendor_scripts', 8 );
+	add_action( 'init', __NAMESPACE__ . '\register_block', 10 );
+	add_action( 'wp_enqueue_scripts', __NAMESPACE__ . '\modify_block_scripts', 100 );
 }
 
 /**
@@ -24,7 +25,12 @@ function bootstrap(): void {
  * @return void
  */
 function register_block(): void {
-	register_block_type( PLUGIN_PATH . '/build/blocks/carousel/block.json' );
+	register_block_type(
+		PLUGIN_PATH . '/build/blocks/carousel/block.json',
+		[
+			'view_script_handles' => [ 'splide' ],
+		]
+	);
 }
 
 /**

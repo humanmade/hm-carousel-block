@@ -1,7 +1,5 @@
-import './view.css';
 
-// Loaded globally to allow for re-use by other comnponents.
-const Splide = window.Splide;
+import './view.css';
 
 const BLOCK_STYLES =  [ 'timeline' ];
 
@@ -92,7 +90,7 @@ function setupCarousel( blockEl, settings ) {
 		splideConfig.focus = 0;
 	}
 
-	return new Splide( blockEl, splideConfig );
+	return new window.Splide( blockEl, splideConfig );
 }
 
 /*
@@ -195,7 +193,7 @@ function setupThumbnailCarousel( blockEl, settings ) {
 		},
 	};
 
-	const thumbnailSplide = new Splide( thumbnailEl, thumbnailSplideConfig );
+	const thumbnailSplide = new window.Splide( thumbnailEl, thumbnailSplideConfig );
 
 	thumbnailSplide.on( 'mounted', () => {
 		const slides = thumbnailSplide.Components.Elements.slides;
@@ -313,8 +311,17 @@ function bootstrap() {
 		.forEach( ( el ) => initCarouselBlock( el ) );
 }
 
+
+function waitForSplideAndBootstrap() {
+	if ( typeof window.Splide !== 'undefined' ) {
+		bootstrap();
+	} else {
+		setTimeout( waitForSplideAndBootstrap, 30 );
+	}
+}
+
 if ( document.readyState !== 'loading' ) {
-	bootstrap();
+	waitForSplideAndBootstrap();
 } else {
-	document.addEventListener( 'DOMContentLoaded', bootstrap );
+	document.addEventListener( 'DOMContentLoaded', waitForSplideAndBootstrap );
 }
