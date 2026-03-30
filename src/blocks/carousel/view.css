@@ -77,3 +77,18 @@
 	transform: none;
 	position: absolute;
 }
+
+/* Fixes WP adding grid/columns to the carousel list and slides, which breaks the carousel layout. */
+.hm-carousel .splide__list {
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  gap: 0 !important;
+  /* Removes grid/columns from WP */
+  grid-template-columns: unset !important;
+  column-count: unset !important;
+  columns: unset !important;
+}
+
+.hm-carousel .splide__slide {
+	flex: 0 0 auto !important;
+}
