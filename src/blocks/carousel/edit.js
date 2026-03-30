@@ -81,19 +81,21 @@ function Edit( props ) {
 						checked={ hasNavButtons }
 						onChange={ ( value ) => setAttributes( { hasNavButtons: value } ) }
 					/>
-					<SelectControl
-						label={ __( 'Arrow Position', 'hm-carousel' ) }
-						value={ arrowPosition || 'default' }
-						options={ [
-							{ label: __( 'Default', 'hm-carousel' ), value: 'default' },
-							{ label: __( 'Center', 'hm-carousel' ), value: 'center' },
-							{ label: __( 'Corner Top Left', 'hm-carousel' ), value: 'corner-top-left' },
-							{ label: __( 'Corner Top Right', 'hm-carousel' ), value: 'corner-top-right' },
-							{ label: __( 'Corner Bottom Left', 'hm-carousel' ), value: 'corner-bottom-left' },
-							{ label: __( 'Corner Bottom Right', 'hm-carousel' ), value: 'corner-bottom-right' },
-						] }
-						onChange={ ( value ) => setAttributes( { arrowPosition: value } ) }
-					/>
+					   { hasNavButtons && (
+						   <SelectControl
+							   label={ __( 'Arrow Position', 'hm-carousel' ) }
+							   value={ arrowPosition || 'default' }
+							   options={ [
+								   { label: __( 'Default', 'hm-carousel' ), value: 'default' },
+								   { label: __( 'Center', 'hm-carousel' ), value: 'center' },
+								   { label: __( 'Corner Top Left', 'hm-carousel' ), value: 'corner-top-left' },
+								   { label: __( 'Corner Top Right', 'hm-carousel' ), value: 'corner-top-right' },
+								   { label: __( 'Corner Bottom Left', 'hm-carousel' ), value: 'corner-bottom-left' },
+								   { label: __( 'Corner Bottom Right', 'hm-carousel' ), value: 'corner-bottom-right' },
+							   ] }
+							   onChange={ ( value ) => setAttributes( { arrowPosition: value } ) }
+						   />
+					   ) }
 				</PanelBody>
 				<PanelBody title={ __( 'Carousel Animation Settings', 'hm-carousel' ) }>
 					<SelectControl
