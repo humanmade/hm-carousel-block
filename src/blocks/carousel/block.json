@@ -69,6 +69,7 @@
 		},
 		"arrowPosition": {
 			"type": "string",
+			"enum": ["default", "inside", "outside", "none"],
 			"default": "default"
 		}
 	},
