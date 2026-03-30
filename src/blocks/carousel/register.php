@@ -15,7 +15,6 @@ use const HM\CarouselBlock\PLUGIN_PATH;
 function bootstrap(): void {
 	add_action( 'init', __NAMESPACE__ . '\\register_block' );
 	add_action( 'wp_enqueue_scripts', __NAMESPACE__ . '\\register_vendor_scripts' );
-	add_action( 'wp_enqueue_scripts', __NAMESPACE__ . '\\modify_block_scripts', 100 );
 }
 
 /**
@@ -40,8 +39,7 @@ function register_vendor_scripts(): void {
 		$splide_asset['dependencies'],
 		$splide_asset['version'],
 		[
-			'in_footer' => true,
-			'strategy'  => 'defer',
+			'in_footer' => true
 		]
 	);
 
@@ -51,26 +49,4 @@ function register_vendor_scripts(): void {
 		$splide_asset['dependencies'],
 		$splide_asset['version'],
 	);
-}
-
-/**
- * Modify block assets.
- *
- * @return void
- */
-function modify_block_scripts(): void {
-	global $wp_scripts, $wp_styles;
-
-	// Defer load view script.
-	wp_script_add_data( 'hm-carousel-view-script', 'strategy', 'defer' );
-
-	// Add splide as a dependency of the view script and style so it is
-	// always loaded before the carousel initialisation runs.
-	if ( isset( $wp_scripts->registered['hm-carousel-view-script'] ) ) {
-		$wp_scripts->registered['hm-carousel-view-script']->deps[] = 'splide';
-	}
-
-	if ( isset( $wp_styles->registered['hm-carousel-style'] ) ) {
-		$wp_styles->registered['hm-carousel-style']->deps[] = 'splide';
-	}
 }
