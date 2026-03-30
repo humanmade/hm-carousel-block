@@ -1,3 +1,8 @@
+/* Add margin to carousel when arrows are positioned outside (corner positions) */
+[data-arrow-position^="corner-"] {
+	margin-top: 70px;
+	margin-bottom: 30px;
+}
 /* Arrow position: center */
 [data-arrow-position="center"] .splide__arrow {
   top: 50%;
