@@ -69,7 +69,14 @@
 		},
 		"arrowPosition": {
 			"type": "string",
-			"enum": ["default", "inside", "outside", "none"],
+			"enum": [
+				"default",
+				"center",
+				"corner-top-left",
+				"corner-top-right",
+				"corner-bottom-left",
+				"corner-bottom-right"
+			],
 			"default": "default"
 		}
 	},
