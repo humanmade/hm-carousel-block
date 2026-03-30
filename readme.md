@@ -77,6 +77,19 @@ To tag a new release,
 
 Once the workflow completes, your new version should be [tagged](https://github.com/humanmade/hm-carousel-block/tags) and available in the list of [releases](https://github.com/humanmade/hm-carousel-block/releases)
 
+## Local Development
+
+We recommend cloning this repository into your active project (or installing the repository via composer with `composer update humanmade/hm-carousel-block --prefer-source`) so that feature development can be tested in the context of full applications, but this repository does support a lightweight [wp-env](https://developer.wordpress.org/block-editor/reference-guides/packages/packages-env/) development environment for testing within a vanilla, un-customized WordPress installation.
+
+After running the `env:start` script, your site will start at [localhost:2001](http://localhost:2001). Log in with `admin` / `password` at [localhost:2001/wp-admin](http://localhost:2001/wp-admin).
+
+Command                   | Description
+------------------------- | -----------
+npm run env:start         | Start a local docker-based WordPress environment
+npm run env:stop          | Turn off the WordPress environment
+npm run env:cli -- wp ... | Run any WP-CLI command within your environment
+npm run env:destroy       | Delete the local wp-env docker environment and clean images and containers
+
 ## License
 
 This plugin is licensed under the GPL v2 or later. The Splide library used in this plugin is licensed under the MIT License.
