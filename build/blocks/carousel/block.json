@@ -66,6 +66,17 @@
     "thumbnailNavType": {
       "type": "string",
       "default": "pagination"
+    },
+    "arrowPosition": {
+      "type": "string",
+      "enum": [
+        "default",
+        "top-left",
+        "top-right",
+        "bottom-left",
+        "bottom-right"
+      ],
+      "default": "default"
     }
   },
   "category": "design",

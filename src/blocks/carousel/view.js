@@ -19,44 +19,63 @@ function getBlockStyle( blockEl ) {
  * @param {Element} blockEl
  */
 function setupCarousel( blockEl, settings ) {
-	const carouselContentEl = blockEl.querySelector(
-		'.hm-carousel__content'
-	);
+	const carouselContentEl = blockEl.querySelector('.hm-carousel__content');
+	const postTemplateEl = blockEl.querySelector('.wp-block-post-template');
+	const isQueryLoop = !!postTemplateEl;
 
-	const postTemplateEl = blockEl.querySelector( '.wp-block-post-template' );
-	const isQueryLoop = !! postTemplateEl;
+	       let targetList;
+	       let trackEl = blockEl.querySelector('.splide__track');
+	       if (!trackEl) {
+		       trackEl = document.createElement('div');
+		       trackEl.classList.add('splide__track');
+		       blockEl.appendChild(trackEl);
+	       }
 
-	const targetList = postTemplateEl || carouselContentEl;
+	       if (isQueryLoop) {
+		       // Only move postTemplateEl if not already inside trackEl
+		       if (postTemplateEl.parentElement !== trackEl) {
+			       trackEl.appendChild(postTemplateEl);
+		       }
+		       postTemplateEl.classList.add('splide__list');
+		       targetList = postTemplateEl;
+	       } else {
+		       if (carouselContentEl.parentElement !== trackEl) {
+			       trackEl.appendChild(carouselContentEl);
+		       }
+		       carouselContentEl.classList.add('splide__list');
+		       targetList = carouselContentEl;
+	       }
 
 	// Don't initialize carousel if target list doesn't exist or has less than 2 slides
-	if ( ! targetList || targetList.childElementCount < 2 ) {
+	if (!targetList || targetList.childElementCount < 2) {
 		return null;
 	}
 
-	// Now proceed with carousel setup
-	blockEl.classList.add( 'splide' );
-	targetList.classList.add( 'splide__list' );
+	blockEl.classList.add('splide');
 
-	if ( isQueryLoop ) {
-		// Add splide__track class to the query block wrapper
-		const queryBlockEl = blockEl.querySelector( '.wp-block-query' );
-		if ( queryBlockEl ) {
-			queryBlockEl.classList.add( 'splide__track' );
-		}
+	let slides;
+	if (isQueryLoop) {
+		Array.from(targetList.children).forEach((child) => {
+			if (child.nodeType === 1) {
+				child.classList.add('splide__slide');
+			}
+		});
+		slides = targetList.querySelectorAll('.splide__slide');
 	} else {
-		// For regular carousel, wrap content in track element
-		const trackEl = document.createElement( 'div' );
-		trackEl.classList.add( 'splide__track' );
-		blockEl.appendChild( trackEl );
-		trackEl.appendChild( targetList );
+		slides = targetList.querySelectorAll('.hm-carousel-slide');
+		slides.forEach((slide) => slide.classList.add('splide__slide'));
 	}
 
-	const slideSelector = isQueryLoop ? '.wp-block-post' : '.hm-carousel-slide';
-	const slides = targetList.querySelectorAll( slideSelector );
-
-	slides.forEach( ( slide ) => slide.classList.add( 'splide__slide' ) );
-
 	setupNav( blockEl, settings );
+
+	// Detects columns for Query Loop and uses that as the perPage value, otherwise defaults to slidesPerPage setting or 1 for fade type.
+	let columns = null;
+	if (isQueryLoop && postTemplateEl) {
+		const match = Array.from(postTemplateEl.classList).find(cls => cls.startsWith('columns-'));
+		if (match) {
+			columns = parseInt(match.replace('columns-', ''), 10);
+		}
+	}
 
 	const splideConfig = {
 		type: settings.type,
@@ -64,7 +83,7 @@ function setupCarousel( blockEl, settings ) {
 		pagination: settings.hasPagination,
 		arrows: settings.hasNavButtons,
 		rewind: false,
-		perPage: settings.type === 'fade' ? 1 : settings.slidesPerPage.desktop,
+		perPage: columns || (settings.type === 'fade' ? 1 : settings.slidesPerPage.desktop),
 		autoplay: settings.autoplay,
 		pauseOnHover: settings.autoplay,
 		interval: settings.interval + settings.speed,
@@ -72,10 +91,10 @@ function setupCarousel( blockEl, settings ) {
 		gap: '1.5rem',
 		breakpoints: {
 			1024: {
-				perPage: settings.slidesPerPage.tablet,
+				perPage: columns || settings.slidesPerPage.tablet,
 			},
 			768: {
-				perPage: settings.slidesPerPage.mobile,
+				perPage: columns || settings.slidesPerPage.mobile,
 			},
 		},
 	};

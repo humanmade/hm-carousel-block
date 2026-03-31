@@ -1,0 +1,65 @@
+/* Add margin to carousel when arrows are positioned outside (corner positions) */
+[data-arrow-position^="top-"],
+[data-arrow-position^="bottom-"] {
+	margin-top: 70px;
+	margin-bottom: 30px;
+}
+
+/* Arrow position: top left */
+[data-arrow-position="top-left"] .splide__arrow.splide__arrow--prev,
+[data-arrow-position="top-left"] .splide__arrow.splide__arrow--next {
+	top: -60px;
+	left: 0;
+	bottom: auto;
+	right: auto;
+	transform: none;
+	position: absolute;
+}
+
+/* Arrow position: top right */
+[data-arrow-position="top-right"] .splide__arrow.splide__arrow--prev,
+[data-arrow-position="top-right"] .splide__arrow.splide__arrow--next {
+	top: -60px;
+	right: 0;
+	bottom: auto;
+	left: auto;
+	transform: none;
+	position: absolute;
+}
+
+/* Arrow position: bottom left */
+[data-arrow-position="bottom-left"] .splide__arrow.splide__arrow--next,
+[data-arrow-position="bottom-left"] .splide__arrow.splide__arrow--prev {
+	bottom: -20px;
+	left: 0;
+	top: auto;
+	right: auto;
+	transform: none;
+	position: absolute;
+}
+
+/* Arrow position: bottom right */
+[data-arrow-position="bottom-right"] .splide__arrow.splide__arrow--prev,
+[data-arrow-position="bottom-right"] .splide__arrow.splide__arrow--next {
+	bottom: -20px;
+	right: 0;
+	top: auto;
+	left: auto;
+	transform: none;
+	position: absolute;
+}
+
+/* Fixes WP adding grid/columns to the carousel list and slides, which breaks the carousel layout. */
+.hm-carousel .splide__list {
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  gap: 0 !important;
+  /* Removes grid/columns from WP */
+  grid-template-columns: unset !important;
+  column-count: unset !important;
+  columns: unset !important;
+}
+
+.hm-carousel .splide__slide {
+	flex: 0 0 auto !important;
+}
