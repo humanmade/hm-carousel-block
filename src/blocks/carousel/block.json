@@ -87,8 +87,19 @@
 	"icon": "slides",
 	"keywords": [ "carousel", "slider", "roller" ],
 	"render": "file:./render.php",
+	"selectors": {
+		"color": {
+			"link": ".hm-carousel__nav"
+		}
+	},
 	"supports": {
 		"align": [ "full", "wide" ],
+		"color": {
+			"link": true,
+			"text": false,
+			"background": true,
+			"__experimentalSkipSerialization": true
+		},
 		"spacing": {
 			"margin": true
 		}

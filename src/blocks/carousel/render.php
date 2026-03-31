@@ -35,6 +35,6 @@ if ( $p->next_tag( [ 'class_name' => 'hm-carousel__content' ] ) ) {
 // Wrap the contents of the parent tag in a <div class="splide__track">.
 $block_markup = trim( $p->get_updated_html() );
 $block_markup = preg_replace( '/^(<div[^>]+>)/', '$1<div class="splide__track">', $block_markup );
-$block_markup = preg_replace( '/<\/div>$/', '</div></div>', $block_markup );
+$block_markup = preg_replace( '/<\/div>$/', '</div><div class="hm-carousel__nav"><pre>' . wp_json_encode( $attributes, JSON_PRETTY_PRINT ) . '</pre></div></div>', $block_markup );
 
 echo $block_markup; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped

@@ -254,7 +254,7 @@ function createNavButtons() {
  * @param {Element} blockEl
  */
 function setupNav( blockEl, settings ) {
-	const navEl = document.createElement( 'div' );
+	const navEl = document.querySelector( '.hm-carousel__nav' ) || document.createElement( 'div' );
 	navEl.classList.add( 'hm-carousel__nav' );
 	blockEl.appendChild( navEl );
 
