@@ -87,11 +87,10 @@ function Edit( props ) {
 							   value={ arrowPosition || 'default' }
 							   options={ [
 								   { label: __( 'Default', 'hm-carousel' ), value: 'default' },
-								   { label: __( 'Center', 'hm-carousel' ), value: 'center' },
-								   { label: __( 'Corner Top Left', 'hm-carousel' ), value: 'corner-top-left' },
-								   { label: __( 'Corner Top Right', 'hm-carousel' ), value: 'corner-top-right' },
-								   { label: __( 'Corner Bottom Left', 'hm-carousel' ), value: 'corner-bottom-left' },
-								   { label: __( 'Corner Bottom Right', 'hm-carousel' ), value: 'corner-bottom-right' },
+								   { label: __( 'Top Left', 'hm-carousel' ), value: 'top-left' },
+								   { label: __( 'Top Right', 'hm-carousel' ), value: 'top-right' },
+								   { label: __( 'Bottom Left', 'hm-carousel' ), value: 'bottom-left' },
+								   { label: __( 'Bottom Right', 'hm-carousel' ), value: 'bottom-right' },
 							   ] }
 							   onChange={ ( value ) => setAttributes( { arrowPosition: value } ) }
 						   />

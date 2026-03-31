@@ -1,25 +1,13 @@
 /* Add margin to carousel when arrows are positioned outside (corner positions) */
-[data-arrow-position^="corner-"] {
+[data-arrow-position^="top-"],
+[data-arrow-position^="bottom-"] {
 	margin-top: 70px;
 	margin-bottom: 30px;
 }
-/* Arrow position: center */
-[data-arrow-position="center"] .splide__arrow {
-  top: 50%;
-  position: absolute;
-}
-[data-arrow-position="center"] .splide__arrow--prev {
-  left: 0;
-  transform: translate(-50%,-50%);
-}
-[data-arrow-position="center"] .splide__arrow--next {
-  right: 0;
-  transform: translate(50%,-50%);
-}
 
-/* Arrow position: corner top left */
-[data-arrow-position="corner-top-left"] .splide__arrow.splide__arrow--prev,
-[data-arrow-position="corner-top-left"] .splide__arrow.splide__arrow--next {
+/* Arrow position: top left */
+[data-arrow-position="top-left"] .splide__arrow.splide__arrow--prev,
+[data-arrow-position="top-left"] .splide__arrow.splide__arrow--next {
 	top: -60px;
 	left: 0;
 	bottom: auto;
@@ -28,9 +16,9 @@
 	position: absolute;
 }
 
-/* Arrow position: corner top right */
-[data-arrow-position="corner-top-right"] .splide__arrow.splide__arrow--prev,
-[data-arrow-position="corner-top-right"] .splide__arrow.splide__arrow--next {
+/* Arrow position: top right */
+[data-arrow-position="top-right"] .splide__arrow.splide__arrow--prev,
+[data-arrow-position="top-right"] .splide__arrow.splide__arrow--next {
 	top: -60px;
 	right: 0;
 	bottom: auto;
@@ -39,9 +27,9 @@
 	position: absolute;
 }
 
-/* Arrow position: corner bottom left */
-[data-arrow-position="corner-bottom-left"] .splide__arrow.splide__arrow--next,
-[data-arrow-position="corner-bottom-left"] .splide__arrow.splide__arrow--prev {
+/* Arrow position: bottom left */
+[data-arrow-position="bottom-left"] .splide__arrow.splide__arrow--next,
+[data-arrow-position="bottom-left"] .splide__arrow.splide__arrow--prev {
 	bottom: -20px;
 	left: 0;
 	top: auto;
@@ -50,9 +38,9 @@
 	position: absolute;
 }
 
-/* Arrow position: corner bottom right */
-[data-arrow-position="corner-bottom-right"] .splide__arrow.splide__arrow--prev,
-[data-arrow-position="corner-bottom-right"] .splide__arrow.splide__arrow--next {
+/* Arrow position: bottom right */
+[data-arrow-position="bottom-right"] .splide__arrow.splide__arrow--prev,
+[data-arrow-position="bottom-right"] .splide__arrow.splide__arrow--next {
 	bottom: -20px;
 	right: 0;
 	top: auto;

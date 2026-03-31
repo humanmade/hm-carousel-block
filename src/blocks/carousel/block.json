@@ -71,11 +71,10 @@
 			"type": "string",
 			"enum": [
 				"default",
-				"center",
-				"corner-top-left",
-				"corner-top-right",
-				"corner-bottom-left",
-				"corner-bottom-right"
+				"top-left",
+				"top-right",
+				"bottom-left",
+				"bottom-right"
 			],
 			"default": "default"
 		}
