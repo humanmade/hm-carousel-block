@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       HM Carousel Block
  * Description:       Carousel/Slider block for WordPress.
- * Version:           0.1.0
+ * Version:           1.1.0
  * Requires at least: 6.7
  * Requires PHP:      7.4
  * Author:            Human Made Limited

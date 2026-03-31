@@ -94,7 +94,7 @@
 	},
 	"textdomain": "hm-carousel-block",
 	"title": "Carousel",
-	"version": "0.1.0",
+	"version": "1.1.0",
 	"viewScript": [ "file:./view.js", "splide" ],
 	"style": [ "file:./view.css", "splide" ]
 }
