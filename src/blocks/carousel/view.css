@@ -6,9 +6,15 @@
 /* Arrow position: center */
 [data-arrow-position="center"] .splide__arrow {
   top: 50%;
-  transform: translateY(-50%);
+  position: absolute;
+}
+[data-arrow-position="center"] .splide__arrow--prev {
   left: 0;
+  transform: translate(-50%,-50%);
+}
+[data-arrow-position="center"] .splide__arrow--next {
   right: 0;
+  transform: translate(50%,-50%);
 }
 
 /* Arrow position: corner top left */
