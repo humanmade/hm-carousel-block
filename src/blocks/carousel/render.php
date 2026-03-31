@@ -25,4 +25,16 @@ if ( $p->next_tag( [ 'tag_name' => 'div', 'class_name' => 'hm-carousel' ] ) ) {
 	}
 }
 
-echo $p->get_updated_html(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+// Adjust rendered markup to match Splide required element hierarchy.
+$p->add_class( 'splide' );
+if ( $p->next_tag( [ 'class_name' => 'hm-carousel__content' ] ) ) {
+	// Give the main carousel content element the splide__list class.
+	$p->add_class( 'splide__list' );
+}
+
+// Wrap the contents of the parent tag in a <div class="splide__track">.
+$block_markup = trim( $p->get_updated_html() );
+$block_markup = preg_replace( '/^(<div[^>]+>)/', '$1<div class="splide__track">', $block_markup );
+$block_markup = preg_replace( '/<\/div>$/', '</div></div>', $block_markup );
+
+echo $block_markup; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped

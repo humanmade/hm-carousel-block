@@ -36,17 +36,10 @@ function setupCarousel( blockEl, settings ) {
 		// Move .wp-block-post-template inside .splide__track
 		trackEl.appendChild(postTemplateEl);
 		postTemplateEl.classList.add('splide__list');
-		targetList = postTemplateEl;
+		targetList = postTemplateEl
+		targetList.classList.addClass('splide');
 	} else {
-		// For regular carousel
-		let trackEl = blockEl.querySelector('.splide__track');
-		if (!trackEl) {
-			trackEl = document.createElement('div');
-			trackEl.classList.add('splide__track');
-			blockEl.appendChild(trackEl);
-		}
-		trackEl.appendChild(carouselContentEl);
-		carouselContentEl.classList.add('splide__list');
+		// For regular carousel, hierarchy should be correct from PHP.
 		targetList = carouselContentEl;
 	}
 
@@ -54,8 +47,6 @@ function setupCarousel( blockEl, settings ) {
 	if (!targetList || targetList.childElementCount < 2) {
 		return null;
 	}
-
-	blockEl.classList.add('splide');
 
 	let slides;
 	if (isQueryLoop) {

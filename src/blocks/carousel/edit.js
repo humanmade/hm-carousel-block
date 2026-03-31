@@ -221,7 +221,7 @@ function Edit( props ) {
 			<div { ...blockProps }>
 				<InnerBlockSlider.Controlled
 					allowedBlock={ allowedBlocks }
-					className={ 'hm-carousel__content' }
+					className="hm-carousel__content"
 					slideLimit={ SLIDE_LIMIT }
 					parentBlockId={ clientId }
 					currentItemIndex={ currentSlideIndex }
