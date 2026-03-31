@@ -219,16 +219,18 @@ function Edit( props ) {
 				) }
 			</InspectorControls>
 			<div { ...blockProps }>
-				<InnerBlockSlider.Controlled
-					allowedBlock={ allowedBlocks }
-					className={ 'hm-carousel__content' }
-					slideLimit={ SLIDE_LIMIT }
-					parentBlockId={ clientId }
-					currentItemIndex={ currentSlideIndex }
-					setCurrentItemIndex={ setCurrentSlideIndex }
-					perPage={ slidesPerPage.desktop }
-					template={ template }
-				/>
+				<div class="splide__track">
+					<InnerBlockSlider.Controlled
+						allowedBlock={ allowedBlocks }
+						className="hm-carousel__content splide__list"
+						slideLimit={ SLIDE_LIMIT }
+						parentBlockId={ clientId }
+						currentItemIndex={ currentSlideIndex }
+						setCurrentItemIndex={ setCurrentSlideIndex }
+						perPage={ slidesPerPage.desktop }
+						template={ template }
+					/>
+				</div>
 				{ hasTabNav && (
 					<TabNav
 						blockId={ clientId }

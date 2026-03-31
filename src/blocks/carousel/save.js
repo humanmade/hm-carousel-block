@@ -11,12 +11,14 @@ function Save() {
 	} );
 
 	const innerBlocksProps = useInnerBlocksProps.save( {
-		className: 'hm-carousel__content',
+		className: 'hm-carousel__content splide__list',
 	} );
 
 	return (
 		<div { ...blockProps }>
-			<div { ...innerBlocksProps } />
+			<div className="splide__track">
+				<div { ...innerBlocksProps } />
+			</div>
 		</div>
 	);
 }

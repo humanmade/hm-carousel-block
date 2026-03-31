@@ -7,6 +7,7 @@
 $p = new \WP_HTML_Tag_Processor( $content );
 
 if ( $p->next_tag( [ 'tag_name' => 'div', 'class_name' => 'hm-carousel' ] ) ) {
+	$p->add_class( 'splide' );
 	$p->set_attribute( 'data-has-tab-nav', $attributes['hasTabNav'] ? 'true' : 'false' );
 	$p->set_attribute( 'data-has-pagination', $attributes['hasPagination'] ? 'true' : 'false' );
 	$p->set_attribute( 'data-has-nav-buttons', $attributes['hasNavButtons'] ? 'true' : 'false' );
