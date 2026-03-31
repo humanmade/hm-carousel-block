@@ -23,32 +23,28 @@ function setupCarousel( blockEl, settings ) {
 	const postTemplateEl = blockEl.querySelector('.wp-block-post-template');
 	const isQueryLoop = !!postTemplateEl;
 
-	let targetList;
-	if (isQueryLoop) {
-		// For Query Loop, force correct Splide structure
-		let trackEl = blockEl.querySelector('.splide__track');
-		if (!trackEl) {
-			trackEl = document.createElement('div');
-			trackEl.classList.add('splide__track');
-			blockEl.appendChild(trackEl);
-		}
+	       let targetList;
+	       let trackEl = blockEl.querySelector('.splide__track');
+	       if (!trackEl) {
+		       trackEl = document.createElement('div');
+		       trackEl.classList.add('splide__track');
+		       blockEl.appendChild(trackEl);
+	       }
 
-		// Move .wp-block-post-template inside .splide__track
-		trackEl.appendChild(postTemplateEl);
-		postTemplateEl.classList.add('splide__list');
-		targetList = postTemplateEl;
-	} else {
-		// For regular carousel
-		let trackEl = blockEl.querySelector('.splide__track');
-		if (!trackEl) {
-			trackEl = document.createElement('div');
-			trackEl.classList.add('splide__track');
-			blockEl.appendChild(trackEl);
-		}
-		trackEl.appendChild(carouselContentEl);
-		carouselContentEl.classList.add('splide__list');
-		targetList = carouselContentEl;
-	}
+	       if (isQueryLoop) {
+		       // Only move postTemplateEl if not already inside trackEl
+		       if (postTemplateEl.parentElement !== trackEl) {
+			       trackEl.appendChild(postTemplateEl);
+		       }
+		       postTemplateEl.classList.add('splide__list');
+		       targetList = postTemplateEl;
+	       } else {
+		       if (carouselContentEl.parentElement !== trackEl) {
+			       trackEl.appendChild(carouselContentEl);
+		       }
+		       carouselContentEl.classList.add('splide__list');
+		       targetList = carouselContentEl;
+	       }
 
 	// Don't initialize carousel if target list doesn't exist or has less than 2 slides
 	if (!targetList || targetList.childElementCount < 2) {
