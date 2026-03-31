@@ -28,6 +28,19 @@ HM Carousel Block is a lightweight WordPress plugin designed to add a carousel b
 4. Add Carousel Slide blocks to the carousel. You can then add whatever content you wish to these.
 5. Customize the carousel settings as needed.
 
+## Using with Query Loop & Arrow Position
+
+You can use the Carousel block to display posts from a Query Loop. To do this:
+
+1. Add the Carousel block to your page or post.
+2. Select the "Articles Carousel" variation when inserting the block, or add a Query Loop block inside the carousel manually.
+3. The carousel will automatically detect the number of columns set in the Query Loop (e.g., columns-2, columns-3) and use that as the number of slides per page.
+4. To set the arrow position, open the block settings sidebar, enable navigation buttons, and choose the desired Arrow Position (Default, Top Left, Top Right, Bottom Left, Bottom Right). The arrows will be positioned accordingly.
+
+### Articles Carousel Variation
+
+The block provides a variation called "Articles Carousel" for quickly creating a carousel of posts using the Query Loop. This variation is optimized for displaying articles and automatically configures the Query Loop inside the carousel.
+
 ## Styling
 
 The recommended approach is to register a new block stylesheet with your custom CSS. This ensures it is only loaded when the block is on the page.
