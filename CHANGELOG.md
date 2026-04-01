@@ -1,5 +1,9 @@
 # Changelog
 
+## v1.1.3
+
+- Fix issue where global `Splide` object reference fails when using WordPress VIP script concatenation [#17](https://github.com/humanmade/hm-carousel-block/pull/17)
+
 ## v1.1.2
 
 - Fix issue where splide.js was not present in released build bundle [#14](https://github.com/humanmade/hm-carousel-block/pull/14)
