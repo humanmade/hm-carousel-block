@@ -1,7 +1,7 @@
 import './view.css';
 
-// Loaded globally to allow for re-use by other comnponents.
-const Splide = window.Splide;
+// Loaded globally to allow for re-use by other components.
+let Splide = null;
 
 const BLOCK_STYLES =  [ 'timeline' ];
 
@@ -322,8 +322,11 @@ function initCarouselBlock( blockEl ) {
  * Kick it all off.
  */
 function bootstrap() {
+	// Initialize our local Splide constructor reference.
+	Splide = window.Splide;
+
 	// Check if Splide is available
-	if ( typeof window.Splide === 'undefined' ) {
+	if ( ! Splide ) {
 		console.error( 'Splide library not loaded. Carousel cannot be initialized.' );
 		return;
 	}
