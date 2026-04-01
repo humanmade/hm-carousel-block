@@ -1,5 +1,9 @@
 # Changelog
 
+## v1.1.2
+
+- Fix issue where splide.js was not present in released build bundle [#14](https://github.com/humanmade/hm-carousel-block/pull/14)
+
 ## v1.1.1
 
 - Fix build error due to outdated package-lock.json [#12](https://github.com/humanmade/hm-carousel-block/pull/12)
