@@ -1,5 +1,9 @@
 # Changelog
 
+## v1.1.1
+
+- Fix build error due to outdated package-lock.json [#12](https://github.com/humanmade/hm-carousel-block/pull/12)
+
 ## v1.1.0
 
 - Add support for visually positioning arrows at vertical midpoint or on any given corner of the slideshow container element [#7](https://github.com/humanmade/hm-carousel-block/pull/7)
