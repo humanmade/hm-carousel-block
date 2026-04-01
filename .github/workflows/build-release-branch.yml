@@ -17,4 +17,4 @@ jobs:
       node_version: 20
       source_branch: main
       release_branch: release
-      built_asset_paths: build
+      built_asset_paths: build build-vendor
