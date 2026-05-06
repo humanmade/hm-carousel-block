@@ -77,6 +77,17 @@
 				"bottom-right"
 			],
 			"default": "default"
+		},
+		"fixedWidth": {
+			"type": "string",
+			"default": ""
+		},
+		"padding": {
+			"type": "object",
+			"default": {
+				"left": "",
+				"right": ""
+			}
 		}
 	},
 	"category": "design",

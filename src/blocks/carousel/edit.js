@@ -5,7 +5,7 @@ import {
 	useBlockProps,
 	InspectorControls,
 } from '@wordpress/block-editor';
-import { PanelBody, ToggleControl, RangeControl, SelectControl, Notice } from '@wordpress/components';
+import { PanelBody, ToggleControl, RangeControl, SelectControl, Notice, TextControl } from '@wordpress/components';
 import TabNav from './components/tab-nav';
 
 const SLIDE_LIMIT = 100;
@@ -46,7 +46,7 @@ const ARTICLES_CAROUSEL_TEMPLATE = [
  */
 function Edit( props ) {
 	const { clientId, attributes, setAttributes } = props;
-	const { layout, hasTabNav, hasPagination, hasNavButtons, type, autoplay, interval, speed, easing, moveSlidesIndividually, hasThumbnailPagination, thumbnailCount, slidesPerPage, thumbnailNavType, arrowPosition } = attributes;
+	const { layout, hasTabNav, hasPagination, hasNavButtons, type, autoplay, interval, speed, easing, moveSlidesIndividually, hasThumbnailPagination, thumbnailCount, slidesPerPage, thumbnailNavType, arrowPosition, fixedWidth, padding } = attributes;
 
 	const isArticlesCarousel = layout === 'articles-carousel';
 
@@ -213,6 +213,28 @@ function Edit( props ) {
 							checked={ moveSlidesIndividually }
 							onChange={ ( value ) => setAttributes( { moveSlidesIndividually: value } ) }
 							help={ __( 'The default behavior is to move a page of slides at a time.') }
+						/>
+					</PanelBody>
+				) }
+				{ ( type === 'loop' || type === 'slide' ) && (
+					<PanelBody title={ __( 'Slide Sizing', 'hm-carousel' ) } initialOpen={ false }>
+						<TextControl
+							label={ __( 'Fixed slide width', 'hm-carousel' ) }
+							value={ fixedWidth }
+							onChange={ ( value ) => setAttributes( { fixedWidth: value } ) }
+							help={ __( 'Optional. CSS length (e.g. "900px" or "60rem"). When set, each slide is sized to this width regardless of slides-per-page; useful for full-bleed carousels with consistent slide widths.', 'hm-carousel' ) }
+						/>
+						<TextControl
+							label={ __( 'Track padding (left)', 'hm-carousel' ) }
+							value={ padding?.left || '' }
+							onChange={ ( value ) => setAttributes( { padding: { ...padding, left: value } } ) }
+							help={ __( 'Optional. CSS length to inset slides from the left edge of the carousel container. Useful for full-bleed carousels where the first slide should align with the content area.', 'hm-carousel' ) }
+						/>
+						<TextControl
+							label={ __( 'Track padding (right)', 'hm-carousel' ) }
+							value={ padding?.right || '' }
+							onChange={ ( value ) => setAttributes( { padding: { ...padding, right: value } } ) }
+							help={ __( 'Optional. CSS length to inset slides from the right edge of the carousel container.', 'hm-carousel' ) }
 						/>
 					</PanelBody>
 				) }

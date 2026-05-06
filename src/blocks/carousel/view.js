@@ -111,6 +111,21 @@ function setupCarousel( blockEl, settings ) {
 		splideConfig.focus = 0;
 	}
 
+	// Fixed slide width — overrides perPage-based sizing. Useful for layouts
+	// that need consistent slide widths regardless of viewport.
+	if ( settings.fixedWidth ) {
+		splideConfig.fixedWidth = settings.fixedWidth;
+	}
+
+	// Track padding — inset slides from the edges of the carousel container.
+	// Accepts left/right values; both default to 0 when one is omitted.
+	if ( settings.padding && ( settings.padding.left || settings.padding.right ) ) {
+		splideConfig.padding = {
+			left: settings.padding.left || 0,
+			right: settings.padding.right || 0,
+		};
+	}
+
 	return new Splide( blockEl, splideConfig );
 }
 
@@ -298,6 +313,8 @@ function initCarouselBlock( blockEl ) {
 		thumbnailCount: JSON.parse(blockEl.dataset.thumbnailCount),
 		slidesPerPage: JSON.parse(blockEl.dataset.slidesPerPage),
 		thumbnailNavType: blockEl.dataset.thumbnailNavType || 'pagination',
+		fixedWidth: blockEl.dataset.fixedWidth || '',
+		padding: blockEl.dataset.padding ? JSON.parse(blockEl.dataset.padding) : null,
 	};
 
 	const carousel = setupCarousel( blockEl, settings );
