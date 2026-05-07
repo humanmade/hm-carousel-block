@@ -128,7 +128,6 @@ function setupCarousel( blockEl, settings ) {
 			splideConfig.padding.right = settings.padding.right;
 		}
 	}
-	}
 
 	return new Splide( blockEl, splideConfig );
 }
