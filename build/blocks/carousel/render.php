@@ -23,6 +23,12 @@ if ( $p->next_tag( [ 'tag_name' => 'div', 'class_name' => 'hm-carousel' ] ) ) {
 	if ( isset( $attributes['arrowPosition'] ) && $attributes['arrowPosition'] && $attributes['arrowPosition'] !== 'default' ) {
 		$p->set_attribute( 'data-arrow-position', $attributes['arrowPosition'] );
 	}
+	if ( ! empty( $attributes['fixedWidth'] ) ) {
+		$p->set_attribute( 'data-fixed-width', $attributes['fixedWidth'] );
+	}
+	if ( ! empty( $attributes['padding'] ) && ( ! empty( $attributes['padding']['left'] ) || ! empty( $attributes['padding']['right'] ) ) ) {
+		$p->set_attribute( 'data-padding', wp_json_encode( $attributes['padding'] ) );
+	}
 }
 
 echo $p->get_updated_html(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
