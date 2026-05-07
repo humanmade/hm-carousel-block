@@ -119,11 +119,15 @@ function setupCarousel( blockEl, settings ) {
 
 	// Track padding — inset slides from the edges of the carousel container.
 	// Accepts left/right values; both default to 0 when one is omitted.
-	if ( settings.padding && ( settings.padding.left || settings.padding.right ) ) {
-		splideConfig.padding = {
-			left: settings.padding.left || 0,
-			right: settings.padding.right || 0,
-		};
+	if ( settings.padding ) {
+		splideConfig.padding = {};
+		if ( settings.padding.left ) {
+			splideConfig.padding.left = settings.padding.left;
+		}
+		if ( settings.padding.right ) {
+			splideConfig.padding.right = settings.padding.right;
+		}
+	}
 	}
 
 	return new Splide( blockEl, splideConfig );
