@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## v1.1.4
 
 - Add `fixedWidth` and `padding` block attributes that are passed through to Splide. Enables full-bleed carousel layouts where each slide has a consistent width and the first slide is inset from the container edge by a configurable amount.
 
