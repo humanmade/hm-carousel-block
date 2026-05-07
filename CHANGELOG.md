@@ -1,5 +1,9 @@
 # Changelog
 
+## v1.1.4
+
+- Add `fixedWidth` and `padding` block attributes that are passed through to Splide. Enables full-bleed carousel layouts where each slide has a consistent width and the first slide is inset from the container edge by a configurable amount.
+
 ## v1.1.3
 
 - Fix issue where global `Splide` object reference fails when using WordPress VIP script concatenation [#17](https://github.com/humanmade/hm-carousel-block/pull/17)
