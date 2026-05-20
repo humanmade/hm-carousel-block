@@ -46,7 +46,7 @@ const ARTICLES_CAROUSEL_TEMPLATE = [
  */
 function Edit( props ) {
 	const { clientId, attributes, setAttributes } = props;
-	const { layout, hasTabNav, hasPagination, hasNavButtons, type, autoplay, interval, speed, easing, moveSlidesIndividually, hasThumbnailPagination, thumbnailCount, slidesPerPage, thumbnailNavType, arrowPosition, fixedWidth, padding, autoScroll, autoScrollSpeed } = attributes;
+	const { layout, hasTabNav, hasPagination, hasNavButtons, type, autoplay, interval, speed, easing, moveSlidesIndividually, hasThumbnailPagination, thumbnailCount, slidesPerPage, thumbnailNavType, arrowPosition, fixedWidth, padding, gap, autoScroll, autoScrollSpeed } = attributes;
 
 	const isArticlesCarousel = layout === 'articles-carousel';
 
@@ -167,6 +167,12 @@ function Edit( props ) {
 							step={ 0.1 }
 						/>
 					) }
+					<TextControl
+						label={ __( 'Slide Gap', 'hm-carousel' ) }
+						help={ __( 'CSS length for the space between slides (e.g. 1.5rem, 48px). Splide reads this to position slides; setting it via CSS alone causes loop math to drift.', 'hm-carousel' ) }
+						value={ gap }
+						onChange={ ( value ) => setAttributes( { gap: value } ) }
+					/>
 				</PanelBody>
 				{ hasPagination && hasThumbnailPagination && (
 					<PanelBody title={ __( 'Thumbnail Carousel Settings', 'hm-carousel' ) }>

@@ -28,6 +28,9 @@ if ( $p->next_tag( [ 'tag_name' => 'div', 'class_name' => 'hm-carousel' ] ) ) {
 	if ( ! empty( $attributes['fixedWidth'] ) ) {
 		$p->set_attribute( 'data-fixed-width', $attributes['fixedWidth'] );
 	}
+	if ( ! empty( $attributes['gap'] ) ) {
+		$p->set_attribute( 'data-gap', $attributes['gap'] );
+	}
 	if ( ! empty( $attributes['padding'] ) && ( ! empty( $attributes['padding']['left'] ) || ! empty( $attributes['padding']['right'] ) ) ) {
 		$p->set_attribute( 'data-padding', wp_json_encode( $attributes['padding'] ) );
 	}

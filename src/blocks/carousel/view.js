@@ -89,7 +89,7 @@ function setupCarousel( blockEl, settings ) {
 		pauseOnHover: settings.autoplay,
 		interval: settings.interval + settings.speed,
 		easing: settings.easing,
-		gap: '1.5rem',
+		gap: settings.gap,
 		breakpoints: {
 			1024: {
 				perPage: columns || settings.slidesPerPage.tablet,
@@ -340,6 +340,7 @@ function initCarouselBlock( blockEl ) {
 		slidesPerPage: JSON.parse(blockEl.dataset.slidesPerPage),
 		thumbnailNavType: blockEl.dataset.thumbnailNavType || 'pagination',
 		fixedWidth: blockEl.dataset.fixedWidth || '',
+		gap: blockEl.dataset.gap || '1.5rem',
 		padding: blockEl.dataset.padding ? JSON.parse(blockEl.dataset.padding) : null,
 		autoScroll: blockEl.dataset.autoScroll === 'true',
 		autoScrollSpeed: blockEl.dataset.autoScrollSpeed !== undefined ? parseFloat(blockEl.dataset.autoScrollSpeed) : 1,

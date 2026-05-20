@@ -2,7 +2,8 @@
 
 ## v1.2.0
 
-- Add `autoScroll` and `autoScrollSpeed` block attributes, backed by [Splide's AutoScroll extension](https://splidejs.com/extensions/auto-scroll/). When enabled, the carousel scrolls continuously at a constant pixels-per-frame speed, pauses on hover/focus, and forces `type: 'loop'`. Intended for non-interactive surfaces such as logo strips and press tickers; autoplay, arrows, and pagination are disabled while auto-scroll is on.
+- Add `autoScroll` and `autoScrollSpeed` block attributes, backed by [Splide's AutoScroll extension](https://splidejs.com/extensions/auto-scroll/). When enabled, the carousel scrolls continuously at a constant pixels-per-frame speed, pauses on hover/focus, and forces `type: 'loop'`. Intended for non-interactive surfaces such as logo strips and press tickers; autoplay, arrows, and pagination are disabled while auto-scroll is on. `autoWidth` is forced on when `autoScroll` is enabled (unless `fixedWidth` is set) so slides size to their content; without this, AutoScroll stretches each slide to a perPage-based width and the marquee shows one giant slide at a time.
+- Add `gap` block attribute (string, default `'1.5rem'`) controlling the CSS length between slides. Splide reads this value to compute slide positions; overriding the gap with theme CSS alone causes loop-math drift on every cycle.
 
 ## v1.1.4
 
