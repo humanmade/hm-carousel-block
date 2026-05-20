@@ -102,6 +102,10 @@ function setupCarousel( blockEl, settings ) {
 
 	// Auto-scroll: continuous linear scroll via Splide's AutoScroll extension.
 	// Requires type:'loop' and is incompatible with autoplay/pagination/arrows.
+	// autoWidth lets each slide size to its content; this is the marquee
+	// behavior AutoScroll expects, and avoids slides being stretched to a
+	// perPage-based width. Themes that need uniform slide widths can still
+	// set fixedWidth, which takes precedence over autoWidth in Splide.
 	if ( settings.autoScroll ) {
 		splideConfig.type = 'loop';
 		splideConfig.autoplay = false;
@@ -109,6 +113,7 @@ function setupCarousel( blockEl, settings ) {
 		splideConfig.pagination = false;
 		splideConfig.drag = 'free';
 		splideConfig.focus = 'center';
+		splideConfig.autoWidth = ! settings.fixedWidth;
 		splideConfig.autoScroll = {
 			speed: settings.autoScrollSpeed,
 			pauseOnHover: true,
