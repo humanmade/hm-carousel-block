@@ -31,6 +31,14 @@
       "type": "number",
       "default": 3000
     },
+    "autoScroll": {
+      "type": "boolean",
+      "default": false
+    },
+    "autoScrollSpeed": {
+      "type": "number",
+      "default": 1
+    },
     "speed": {
       "type": "number",
       "default": 800
@@ -81,6 +89,10 @@
     "fixedWidth": {
       "type": "string",
       "default": ""
+    },
+    "gap": {
+      "type": "string",
+      "default": "1.5rem"
     },
     "padding": {
       "type": "object",

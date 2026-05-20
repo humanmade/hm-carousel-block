@@ -13,6 +13,8 @@ if ( $p->next_tag( [ 'tag_name' => 'div', 'class_name' => 'hm-carousel' ] ) ) {
 	$p->set_attribute( 'data-type', $attributes['type'] );
 	$p->set_attribute( 'data-autoplay', $attributes['autoplay'] ? 'true' : 'false' );
 	$p->set_attribute( 'data-interval', $attributes['interval'] );
+	$p->set_attribute( 'data-auto-scroll', ! empty( $attributes['autoScroll'] ) ? 'true' : 'false' );
+	$p->set_attribute( 'data-auto-scroll-speed', isset( $attributes['autoScrollSpeed'] ) ? (string) $attributes['autoScrollSpeed'] : '1' );
 	$p->set_attribute( 'data-speed', $attributes['speed'] );
 	$p->set_attribute( 'data-easing', $attributes['easing'] );
 	$p->set_attribute( 'data-move-slides-individually', $attributes['moveSlidesIndividually'] ? 'true' : 'false' );
@@ -25,6 +27,9 @@ if ( $p->next_tag( [ 'tag_name' => 'div', 'class_name' => 'hm-carousel' ] ) ) {
 	}
 	if ( ! empty( $attributes['fixedWidth'] ) ) {
 		$p->set_attribute( 'data-fixed-width', $attributes['fixedWidth'] );
+	}
+	if ( ! empty( $attributes['gap'] ) ) {
+		$p->set_attribute( 'data-gap', $attributes['gap'] );
 	}
 	if ( ! empty( $attributes['padding'] ) && ( ! empty( $attributes['padding']['left'] ) || ! empty( $attributes['padding']['right'] ) ) ) {
 		$p->set_attribute( 'data-padding', wp_json_encode( $attributes['padding'] ) );
