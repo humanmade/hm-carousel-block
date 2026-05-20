@@ -46,7 +46,7 @@ const ARTICLES_CAROUSEL_TEMPLATE = [
  */
 function Edit( props ) {
 	const { clientId, attributes, setAttributes } = props;
-	const { layout, hasTabNav, hasPagination, hasNavButtons, type, autoplay, interval, speed, easing, moveSlidesIndividually, hasThumbnailPagination, thumbnailCount, slidesPerPage, thumbnailNavType, arrowPosition, fixedWidth, padding } = attributes;
+	const { layout, hasTabNav, hasPagination, hasNavButtons, type, autoplay, interval, speed, easing, moveSlidesIndividually, hasThumbnailPagination, thumbnailCount, slidesPerPage, thumbnailNavType, arrowPosition, fixedWidth, padding, autoScroll, autoScrollSpeed } = attributes;
 
 	const isArticlesCarousel = layout === 'articles-carousel';
 
@@ -127,9 +127,11 @@ function Edit( props ) {
 					<ToggleControl
 						label={ __( 'Autoplay', 'hm-carousel' ) }
 						checked={ autoplay }
+						disabled={ autoScroll }
+						help={ autoScroll ? __( 'Disabled while Auto-scroll is on.', 'hm-carousel' ) : undefined }
 						onChange={ ( value ) => setAttributes( { autoplay: value } ) }
 					/>
-					{ autoplay && (
+					{ autoplay && ! autoScroll && (
 						<>
 							<RangeControl
 								label={ __( 'Autoplay Interval (seconds)', 'hm-carousel' ) }
@@ -148,6 +150,22 @@ function Edit( props ) {
 								</Notice>
 							) }
 						</>
+					) }
+					<ToggleControl
+						label={ __( 'Auto-scroll', 'hm-carousel' ) }
+						checked={ autoScroll }
+						help={ __( 'Continuously scroll the slides at a constant speed. Best for non-interactive content like logo strips. Forces loop type and disables autoplay, arrows, and pagination.', 'hm-carousel' ) }
+						onChange={ ( value ) => setAttributes( { autoScroll: value } ) }
+					/>
+					{ autoScroll && (
+						<RangeControl
+							label={ __( 'Auto-scroll Speed (pixels per frame)', 'hm-carousel' ) }
+							value={ autoScrollSpeed }
+							onChange={ ( value ) => setAttributes( { autoScrollSpeed: value } ) }
+							min={ 0.1 }
+							max={ 5 }
+							step={ 0.1 }
+						/>
 					) }
 				</PanelBody>
 				{ hasPagination && hasThumbnailPagination && (

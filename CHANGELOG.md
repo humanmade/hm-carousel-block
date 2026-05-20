@@ -1,5 +1,9 @@
 # Changelog
 
+## v1.2.0
+
+- Add `autoScroll` and `autoScrollSpeed` block attributes, backed by [Splide's AutoScroll extension](https://splidejs.com/extensions/auto-scroll/). When enabled, the carousel scrolls continuously at a constant pixels-per-frame speed, pauses on hover/focus, and forces `type: 'loop'`. Intended for non-interactive surfaces such as logo strips and press tickers; autoplay, arrows, and pagination are disabled while auto-scroll is on.
+
 ## v1.1.4
 
 - Add `fixedWidth` and `padding` block attributes that are passed through to Splide. Enables full-bleed carousel layouts where each slide has a consistent width and the first slide is inset from the container edge by a configurable amount.

@@ -1,4 +1,5 @@
 import './view.css';
+import { AutoScroll } from '@splidejs/splide-extension-auto-scroll';
 
 // Loaded globally to allow for re-use by other components.
 let Splide = null;
@@ -98,6 +99,23 @@ function setupCarousel( blockEl, settings ) {
 			},
 		},
 	};
+
+	// Auto-scroll: continuous linear scroll via Splide's AutoScroll extension.
+	// Requires type:'loop' and is incompatible with autoplay/pagination/arrows.
+	if ( settings.autoScroll ) {
+		splideConfig.type = 'loop';
+		splideConfig.autoplay = false;
+		splideConfig.arrows = false;
+		splideConfig.pagination = false;
+		splideConfig.drag = 'free';
+		splideConfig.focus = 'center';
+		splideConfig.autoScroll = {
+			speed: settings.autoScrollSpeed,
+			pauseOnHover: true,
+			pauseOnFocus: true,
+			rewind: false,
+		};
+	}
 
 	// Force disable pagination if thumbnail carousel is enabled.
 	if ( settings.hasThumbnailPagination ) {
@@ -318,6 +336,8 @@ function initCarouselBlock( blockEl ) {
 		thumbnailNavType: blockEl.dataset.thumbnailNavType || 'pagination',
 		fixedWidth: blockEl.dataset.fixedWidth || '',
 		padding: blockEl.dataset.padding ? JSON.parse(blockEl.dataset.padding) : null,
+		autoScroll: blockEl.dataset.autoScroll === 'true',
+		autoScrollSpeed: blockEl.dataset.autoScrollSpeed !== undefined ? parseFloat(blockEl.dataset.autoScrollSpeed) : 1,
 	};
 
 	const carousel = setupCarousel( blockEl, settings );
@@ -327,13 +347,15 @@ function initCarouselBlock( blockEl ) {
 		return;
 	}
 
+	const extensions = settings.autoScroll ? { AutoScroll } : undefined;
+
 	if ( settings.hasThumbnailPagination ) {
 		const thumbnailCarousel = setupThumbnailCarousel( blockEl, settings );
 		carousel.sync( thumbnailCarousel );
-		carousel.mount();
+		carousel.mount( extensions );
 		thumbnailCarousel.mount();
 	} else {
-		carousel.mount();
+		carousel.mount( extensions );
 	}
 
 }
