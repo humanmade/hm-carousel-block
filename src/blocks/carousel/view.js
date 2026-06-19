@@ -1,35 +1,17 @@
 import './view.css';
 import { AutoScroll } from '@splidejs/splide-extension-auto-scroll';
+import {
+	BREAKPOINTS,
+	DEFAULT_DIRECTION,
+	DEFAULT_PADDING,
+	DEFAULT_RESPONSIVE_BOOLEAN,
+	DEFAULT_RESPONSIVE_LENGTH,
+	createSplideConfig,
+	normalizeResponsiveSetting,
+} from './config.mjs';
 
 // Loaded globally to allow for re-use by other components.
 let Splide = null;
-
-const BLOCK_STYLES =  [ 'timeline' ];
-const DEFAULT_DIRECTION = {
-	desktop: 'ltr',
-	tablet: 'ltr',
-	mobile: 'ltr',
-};
-const DEFAULT_RESPONSIVE_LENGTH = {
-	desktop: '',
-	tablet: '',
-	mobile: '',
-};
-const DEFAULT_RESPONSIVE_BOOLEAN = {
-	desktop: true,
-	tablet: true,
-	mobile: true,
-};
-const DEFAULT_PADDING = {
-	left: '',
-	right: '',
-	top: '',
-	bottom: '',
-};
-const BREAKPOINTS = {
-	tablet: 1024,
-	mobile: 768,
-};
 
 function parseJsonDataAttribute( value, fallback ) {
 	if ( ! value ) {
@@ -43,231 +25,74 @@ function parseJsonDataAttribute( value, fallback ) {
 	}
 }
 
-function normalizeResponsiveSetting( value, fallback ) {
-	if ( typeof value === 'string' ) {
-		return {
-			...fallback,
-			desktop: value,
-			tablet: value,
-			mobile: value,
-		};
-	}
-
-	return {
-		...fallback,
-		...( value || {} ),
-	};
-}
-
-function getResponsiveValue( setting, breakpoint, fallback = '' ) {
-	return setting?.[ breakpoint ] ?? fallback;
-}
-
-function addResponsiveLength( config, option, values, breakpoint ) {
-	const desktopValue = getResponsiveValue( values, 'desktop' );
-	const value = getResponsiveValue( values, breakpoint );
-
-	if ( value || ( breakpoint !== 'desktop' && desktopValue ) ) {
-		config[ option ] = value;
-	}
-}
-
-function getTrackPadding( padding, direction ) {
-	const paddingConfig = {};
-	const axis = direction === 'ttb' ? [ 'top', 'bottom' ] : [ 'left', 'right' ];
-
-	axis.forEach( ( side ) => {
-		if ( padding?.[ side ] ) {
-			paddingConfig[ side ] = padding[ side ];
-		}
-	} );
-
-	return Object.keys( paddingConfig ).length ? paddingConfig : null;
-}
-
-function getAutoScrollConfig( settings ) {
-	return {
-		speed: settings.autoScrollSpeed,
-		pauseOnHover: true,
-		pauseOnFocus: true,
-		rewind: false,
-	};
-}
-
-function setAutoScrollConfig( config, settings, breakpoint ) {
-	const enabled = getResponsiveValue(
-		settings.autoScrollBreakpoints,
-		breakpoint,
-		getResponsiveValue( settings.autoScrollBreakpoints, 'desktop', true )
-	);
-
-	if ( enabled ) {
-		config.drag = 'free';
-		config.focus = 'center';
-		config.autoWidth = config.direction !== 'ttb' && ! settings.fixedWidth;
-		config.autoScroll = getAutoScrollConfig( settings );
-		return;
-	}
-
-	config.drag = true;
-	config.focus = 0;
-	config.autoWidth = false;
-	config.autoScroll = false;
-}
-
-function getBlockStyle( blockEl ) {
-	const styles = BLOCK_STYLES;
-	const foundStyle = styles.findIndex( ( style ) =>
-		blockEl.classList.contains( 'is-style-' + style )
-	);
-	return foundStyle >= 0 ? styles[ foundStyle ] : 'default';
-}
-
 /**
  * Functionality for the HM Carousel block.
  *
  * @param {Element} blockEl
+ * @param {Object}  settings
  */
 function setupCarousel( blockEl, settings ) {
-	const carouselContentEl = blockEl.querySelector('.hm-carousel__content');
-	const postTemplateEl = blockEl.querySelector('.wp-block-post-template');
-	const isQueryLoop = !!postTemplateEl;
+	const carouselContentEl = blockEl.querySelector( '.hm-carousel__content' );
+	const postTemplateEl = blockEl.querySelector( '.wp-block-post-template' );
+	const isQueryLoop = !! postTemplateEl;
 
-	       let targetList;
-	       let trackEl = blockEl.querySelector('.splide__track');
-	       if (!trackEl) {
-		       trackEl = document.createElement('div');
-		       trackEl.classList.add('splide__track');
-		       blockEl.appendChild(trackEl);
-	       }
+	let targetList;
+	let trackEl = blockEl.querySelector( '.splide__track' );
+	if ( ! trackEl ) {
+		trackEl = document.createElement( 'div' );
+		trackEl.classList.add( 'splide__track' );
+		blockEl.appendChild( trackEl );
+	}
 
-	       if (isQueryLoop) {
-		       // Only move postTemplateEl if not already inside trackEl
-		       if (postTemplateEl.parentElement !== trackEl) {
-			       trackEl.appendChild(postTemplateEl);
-		       }
-		       postTemplateEl.classList.add('splide__list');
-		       targetList = postTemplateEl;
-	       } else {
-		       if (carouselContentEl.parentElement !== trackEl) {
-			       trackEl.appendChild(carouselContentEl);
-		       }
-		       carouselContentEl.classList.add('splide__list');
-		       targetList = carouselContentEl;
-	       }
+	if ( isQueryLoop ) {
+		// Only move postTemplateEl if not already inside trackEl
+		if ( postTemplateEl.parentElement !== trackEl ) {
+			trackEl.appendChild( postTemplateEl );
+		}
+		postTemplateEl.classList.add( 'splide__list' );
+		targetList = postTemplateEl;
+	} else {
+		if ( carouselContentEl.parentElement !== trackEl ) {
+			trackEl.appendChild( carouselContentEl );
+		}
+		carouselContentEl.classList.add( 'splide__list' );
+		targetList = carouselContentEl;
+	}
 
 	// Don't initialize carousel if target list doesn't exist or has less than 2 slides
-	if (!targetList || targetList.childElementCount < 2) {
+	if ( ! targetList || targetList.childElementCount < 2 ) {
 		return null;
 	}
 
-	blockEl.classList.add('splide');
+	blockEl.classList.add( 'splide' );
 
 	let slides;
-	if (isQueryLoop) {
-		Array.from(targetList.children).forEach((child) => {
-			if (child.nodeType === 1) {
-				child.classList.add('splide__slide');
+	if ( isQueryLoop ) {
+		Array.from( targetList.children ).forEach( ( child ) => {
+			if ( child.nodeType === 1 ) {
+				child.classList.add( 'splide__slide' );
 			}
-		});
-		slides = targetList.querySelectorAll('.splide__slide');
+		} );
+		slides = targetList.querySelectorAll( '.splide__slide' );
 	} else {
-		slides = targetList.querySelectorAll('.hm-carousel-slide');
-		slides.forEach((slide) => slide.classList.add('splide__slide'));
+		slides = targetList.querySelectorAll( '.hm-carousel-slide' );
+		slides.forEach( ( slide ) => slide.classList.add( 'splide__slide' ) );
 	}
 
 	setupNav( blockEl, settings );
 
 	// Detects columns for Query Loop and uses that as the perPage value, otherwise defaults to slidesPerPage setting or 1 for fade type.
 	let columns = null;
-	if (isQueryLoop && postTemplateEl) {
-		const match = Array.from(postTemplateEl.classList).find(cls => cls.startsWith('columns-'));
-		if (match) {
-			columns = parseInt(match.replace('columns-', ''), 10);
+	if ( isQueryLoop && postTemplateEl ) {
+		const match = Array.from( postTemplateEl.classList ).find( ( cls ) =>
+			cls.startsWith( 'columns-' )
+		);
+		if ( match ) {
+			columns = parseInt( match.replace( 'columns-', '' ), 10 );
 		}
 	}
 
-	const splideConfig = {
-		type: settings.type,
-		speed: settings.speed,
-		pagination: settings.hasPagination,
-		arrows: settings.hasNavButtons,
-		rewind: false,
-		direction: getResponsiveValue( settings.direction, 'desktop', 'ltr' ),
-		perPage: columns || (settings.type === 'fade' ? 1 : settings.slidesPerPage.desktop),
-		autoplay: settings.autoplay,
-		pauseOnHover: settings.autoplay,
-		interval: settings.interval + settings.speed,
-		easing: settings.easing,
-		gap: settings.gap,
-		breakpoints: {
-			[ BREAKPOINTS.tablet ]: {
-				direction: getResponsiveValue( settings.direction, 'tablet', getResponsiveValue( settings.direction, 'desktop', 'ltr' ) ),
-				perPage: columns || settings.slidesPerPage.tablet,
-			},
-			[ BREAKPOINTS.mobile ]: {
-				direction: getResponsiveValue( settings.direction, 'mobile', getResponsiveValue( settings.direction, 'tablet', getResponsiveValue( settings.direction, 'desktop', 'ltr' ) ) ),
-				perPage: columns || settings.slidesPerPage.mobile,
-			},
-		},
-	};
-
-	addResponsiveLength( splideConfig, 'height', settings.height, 'desktop' );
-	addResponsiveLength( splideConfig, 'fixedHeight', settings.fixedHeight, 'desktop' );
-	Object.entries( BREAKPOINTS ).forEach( ( [ breakpoint, width ] ) => {
-		addResponsiveLength( splideConfig.breakpoints[ width ], 'height', settings.height, breakpoint );
-		addResponsiveLength( splideConfig.breakpoints[ width ], 'fixedHeight', settings.fixedHeight, breakpoint );
-	} );
-
-	// Auto-scroll: continuous linear scroll via Splide's AutoScroll extension.
-	// Requires type:'loop' and is incompatible with autoplay/pagination/arrows.
-	if ( settings.autoScroll ) {
-		splideConfig.type = 'loop';
-		splideConfig.autoplay = false;
-		splideConfig.arrows = false;
-		splideConfig.pagination = false;
-		setAutoScrollConfig( splideConfig, settings, 'desktop' );
-		Object.entries( BREAKPOINTS ).forEach( ( [ breakpoint, width ] ) => {
-			setAutoScrollConfig( splideConfig.breakpoints[ width ], settings, breakpoint );
-		} );
-		}
-
-	// Force disable pagination if thumbnail carousel is enabled.
-	if ( settings.hasThumbnailPagination ) {
-		splideConfig.pagination = false;
-		splideConfig.arrows = false;
-	}
-
-	// Should navigation move single slides or a page of slides.
-	if ( settings.moveSlidesIndividually ) {
-		splideConfig.perMove = 1;
-		splideConfig.focus = 0;
-	}
-
-	// Fixed slide width — overrides perPage-based sizing. Useful for layouts
-	// that need consistent slide widths regardless of viewport.
-	if ( settings.fixedWidth ) {
-		splideConfig.fixedWidth = settings.fixedWidth;
-	}
-
-	// Track padding — inset slides from the edges of the carousel container.
-	// Horizontal tracks use left/right and vertical tracks use top/bottom.
-	if ( settings.padding ) {
-		const desktopPadding = getTrackPadding( settings.padding, splideConfig.direction );
-		if ( desktopPadding ) {
-			splideConfig.padding = desktopPadding;
-		}
-		Object.values( BREAKPOINTS ).forEach( ( width ) => {
-			const breakpointPadding = getTrackPadding(
-				settings.padding,
-				splideConfig.breakpoints[ width ].direction
-			);
-
-			if ( breakpointPadding ) {
-				splideConfig.breakpoints[ width ].padding = breakpointPadding;
-			}
-		} );
-	}
+	const splideConfig = createSplideConfig( settings, columns );
 
 	return new Splide( blockEl, splideConfig );
 }
@@ -297,36 +122,34 @@ function setupThumbnailCarousel( blockEl, settings ) {
 	const isQueryLoop = !! blockEl.querySelector( '.wp-block-post-template' );
 	const slideSelector = isQueryLoop ? '.wp-block-post' : '.hm-carousel-slide';
 
-	blockEl
-		.querySelectorAll( slideSelector )
-		.forEach( ( slideEl, i ) => {
-			const slideTitle = slideEl.dataset.title || 'Slide ' + ( i + 1 );
+	blockEl.querySelectorAll( slideSelector ).forEach( ( slideEl, i ) => {
+		const slideTitle = slideEl.dataset.title || 'Slide ' + ( i + 1 );
 
-			const thumbnailSlideEl = document.createElement( 'li' );
-			thumbnailSlideEl.classList.add( 'splide__slide' );
-			thumbnailList.appendChild( thumbnailSlideEl );
+		const thumbnailSlideEl = document.createElement( 'li' );
+		thumbnailSlideEl.classList.add( 'splide__slide' );
+		thumbnailList.appendChild( thumbnailSlideEl );
 
-			const btnEl = document.createElement( 'button' );
-			btnEl.classList.add( 'hm-carousel__thumbnails-button' );
-			thumbnailSlideEl.appendChild( btnEl );
+		const btnEl = document.createElement( 'button' );
+		btnEl.classList.add( 'hm-carousel__thumbnails-button' );
+		thumbnailSlideEl.appendChild( btnEl );
 
-			// Container span for styling.
-			const spanEl = document.createElement( 'span' );
-			spanEl.classList.add( 'hm-carousel__thumbnails-button-text' );
-			spanEl.appendChild( document.createTextNode( slideTitle ) );
+		// Container span for styling.
+		const spanEl = document.createElement( 'span' );
+		spanEl.classList.add( 'hm-carousel__thumbnails-button-text' );
+		spanEl.appendChild( document.createTextNode( slideTitle ) );
 
-			btnEl.appendChild( spanEl );
+		btnEl.appendChild( spanEl );
 
-			// Thumbnail image.
-			if ( slideEl.dataset.thumbnailImageSrc ) {
-				const imgEl = document.createElement( 'img' );
-				imgEl.classList.add( 'hm-carousel__thumbnails-button-img' );
-				imgEl.setAttribute( 'src', slideEl.dataset.thumbnailImageSrc );
-				imgEl.setAttribute( 'alt', slideTitle );
-				imgEl.setAttribute( 'loading', 'lazy' );
-				btnEl.appendChild( imgEl );
-			}
-		} );
+		// Thumbnail image.
+		if ( slideEl.dataset.thumbnailImageSrc ) {
+			const imgEl = document.createElement( 'img' );
+			imgEl.classList.add( 'hm-carousel__thumbnails-button-img' );
+			imgEl.setAttribute( 'src', slideEl.dataset.thumbnailImageSrc );
+			imgEl.setAttribute( 'alt', slideTitle );
+			imgEl.setAttribute( 'loading', 'lazy' );
+			btnEl.appendChild( imgEl );
+		}
+	} );
 
 	// Create arrow container
 	const arrowsEl = document.createElement( 'div' );
@@ -353,21 +176,33 @@ function setupThumbnailCarousel( blockEl, settings ) {
 
 	const thumbnailSplideConfig = {
 		rewind: true,
-		pagination: slideCount > settings.thumbnailCount.desktop && settings.thumbnailNavType === 'pagination',
-		arrows: slideCount > settings.thumbnailCount.desktop && settings.thumbnailNavType === 'buttons',
+		pagination:
+			slideCount > settings.thumbnailCount.desktop &&
+			settings.thumbnailNavType === 'pagination',
+		arrows:
+			slideCount > settings.thumbnailCount.desktop &&
+			settings.thumbnailNavType === 'buttons',
 		isNavigation: true,
 		perPage: settings.thumbnailCount.desktop,
 		gap: '1.5rem',
 		breakpoints: {
-			1024: {
+			[ BREAKPOINTS.tablet ]: {
 				perPage: settings.thumbnailCount.tablet,
-				pagination: slideCount > settings.thumbnailCount.tablet && settings.thumbnailNavType === 'pagination',
-				arrows: slideCount > settings.thumbnailCount.tablet && settings.thumbnailNavType === 'buttons',
+				pagination:
+					slideCount > settings.thumbnailCount.tablet &&
+					settings.thumbnailNavType === 'pagination',
+				arrows:
+					slideCount > settings.thumbnailCount.tablet &&
+					settings.thumbnailNavType === 'buttons',
 			},
-			768: {
+			[ BREAKPOINTS.mobile ]: {
 				perPage: settings.thumbnailCount.mobile,
-				pagination: slideCount > settings.thumbnailCount.tablet && settings.thumbnailNavType === 'pagination',
-				arrows: slideCount > settings.thumbnailCount.tablet && settings.thumbnailNavType === 'buttons',
+				pagination:
+					slideCount > settings.thumbnailCount.tablet &&
+					settings.thumbnailNavType === 'pagination',
+				arrows:
+					slideCount > settings.thumbnailCount.tablet &&
+					settings.thumbnailNavType === 'buttons',
 			},
 		},
 	};
@@ -444,39 +279,68 @@ function setupNav( blockEl, settings ) {
  */
 function initCarouselBlock( blockEl ) {
 	const settings = {
-		speed: parseInt(blockEl.dataset.speed, 10) || 800,
+		speed: parseInt( blockEl.dataset.speed, 10 ) || 800,
 		type: blockEl.dataset.type || 'slide',
 		hasPagination: blockEl.dataset.hasPagination === 'true',
 		hasNavButtons: blockEl.dataset.hasNavButtons === 'true',
 		autoplay: blockEl.dataset.autoplay === 'true',
-		interval: blockEl.dataset.interval !== undefined ? parseInt(blockEl.dataset.interval, 10) : 3000,
+		interval:
+			blockEl.dataset.interval !== undefined
+				? parseInt( blockEl.dataset.interval, 10 )
+				: 3000,
 		easing: blockEl.dataset.easing || 'ease',
-		moveSlidesIndividually: blockEl.dataset.moveSlidesIndividually === 'true',
-		hasThumbnailPagination: blockEl.dataset.hasPagination === 'true' && blockEl.dataset.hasThumbnailPagination === 'true',
-		thumbnailCount: JSON.parse(blockEl.dataset.thumbnailCount),
-		slidesPerPage: JSON.parse(blockEl.dataset.slidesPerPage),
+		moveSlidesIndividually:
+			blockEl.dataset.moveSlidesIndividually === 'true',
+		hasThumbnailPagination:
+			blockEl.dataset.hasPagination === 'true' &&
+			blockEl.dataset.hasThumbnailPagination === 'true',
+		thumbnailCount: JSON.parse( blockEl.dataset.thumbnailCount ),
+		slidesPerPage: JSON.parse( blockEl.dataset.slidesPerPage ),
 		direction: normalizeResponsiveSetting(
-			parseJsonDataAttribute( blockEl.dataset.direction, DEFAULT_DIRECTION ),
+			parseJsonDataAttribute(
+				blockEl.dataset.direction,
+				DEFAULT_DIRECTION
+			),
 			DEFAULT_DIRECTION
 		),
 		height: normalizeResponsiveSetting(
-			parseJsonDataAttribute( blockEl.dataset.height, DEFAULT_RESPONSIVE_LENGTH ),
+			parseJsonDataAttribute(
+				blockEl.dataset.height,
+				DEFAULT_RESPONSIVE_LENGTH
+			),
 			DEFAULT_RESPONSIVE_LENGTH
 		),
 		fixedHeight: normalizeResponsiveSetting(
-			parseJsonDataAttribute( blockEl.dataset.fixedHeight, DEFAULT_RESPONSIVE_LENGTH ),
+			parseJsonDataAttribute(
+				blockEl.dataset.fixedHeight,
+				DEFAULT_RESPONSIVE_LENGTH
+			),
 			DEFAULT_RESPONSIVE_LENGTH
 		),
 		thumbnailNavType: blockEl.dataset.thumbnailNavType || 'pagination',
 		fixedWidth: blockEl.dataset.fixedWidth || '',
 		gap: blockEl.dataset.gap || '1.5rem',
-		padding: blockEl.dataset.padding ? { ...DEFAULT_PADDING, ...parseJsonDataAttribute( blockEl.dataset.padding, DEFAULT_PADDING ) } : null,
+		padding: blockEl.dataset.padding
+			? {
+					...DEFAULT_PADDING,
+					...parseJsonDataAttribute(
+						blockEl.dataset.padding,
+						DEFAULT_PADDING
+					),
+			  }
+			: null,
 		autoScroll: blockEl.dataset.autoScroll === 'true',
 		autoScrollBreakpoints: normalizeResponsiveSetting(
-			parseJsonDataAttribute( blockEl.dataset.autoScrollBreakpoints, DEFAULT_RESPONSIVE_BOOLEAN ),
+			parseJsonDataAttribute(
+				blockEl.dataset.autoScrollBreakpoints,
+				DEFAULT_RESPONSIVE_BOOLEAN
+			),
 			DEFAULT_RESPONSIVE_BOOLEAN
 		),
-		autoScrollSpeed: blockEl.dataset.autoScrollSpeed !== undefined ? parseFloat(blockEl.dataset.autoScrollSpeed) : 1,
+		autoScrollSpeed:
+			blockEl.dataset.autoScrollSpeed !== undefined
+				? parseFloat( blockEl.dataset.autoScrollSpeed )
+				: 1,
 	};
 
 	const carousel = setupCarousel( blockEl, settings );
@@ -496,7 +360,6 @@ function initCarouselBlock( blockEl ) {
 	} else {
 		carousel.mount( extensions );
 	}
-
 }
 
 /**
@@ -508,7 +371,10 @@ function bootstrap() {
 
 	// Check if Splide is available
 	if ( ! Splide ) {
-		console.error( 'Splide library not loaded. Carousel cannot be initialized.' );
+		// eslint-disable-next-line no-console
+		console.error(
+			'Splide library not loaded. Carousel cannot be initialized.'
+		);
 		return;
 	}
 	document

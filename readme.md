@@ -41,6 +41,16 @@ You can use the Carousel block to display posts from a Query Loop. To do this:
 
 The block provides a variation called "Articles Carousel" for quickly creating a carousel of posts using the Query Loop. This variation is optimized for displaying articles and automatically configures the Query Loop inside the carousel.
 
+## Responsive Direction and Auto-scroll
+
+The carousel supports separate desktop, tablet, and mobile settings for direction, slides per page, height, fixed slide height, and Auto-scroll.
+
+Use `Top to bottom` direction for vertical carousels. Splide requires a carousel height or fixed slide height for vertical tracks, so set `Carousel height` or `Fixed slide height` when a breakpoint uses `Top to bottom`. Blank vertical breakpoint heights inherit the nearest earlier height value. When a later breakpoint switches back to a horizontal direction, inherited vertical height is cleared for that breakpoint.
+
+Track padding follows the active axis. Horizontal carousels use left/right padding, and vertical carousels use top/bottom padding.
+
+Auto-scroll can be enabled per breakpoint. Breakpoints with Auto-scroll enabled use loop mode and disable autoplay, arrows, and pagination. Breakpoints with Auto-scroll disabled restore the configured carousel type, autoplay, arrows, and pagination settings.
+
 ## Styling
 
 The recommended approach is to register a new block stylesheet with your custom CSS. This ensures it is only loaded when the block is on the page.
