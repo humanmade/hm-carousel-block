@@ -15,6 +15,11 @@ const DEFAULT_RESPONSIVE_LENGTH = {
 	tablet: '',
 	mobile: '',
 };
+const DEFAULT_RESPONSIVE_BOOLEAN = {
+	desktop: true,
+	tablet: true,
+	mobile: true,
+};
 const DEFAULT_PADDING = {
 	left: '',
 	right: '',
@@ -78,6 +83,36 @@ function getTrackPadding( padding, direction ) {
 	} );
 
 	return Object.keys( paddingConfig ).length ? paddingConfig : null;
+}
+
+function getAutoScrollConfig( settings ) {
+	return {
+		speed: settings.autoScrollSpeed,
+		pauseOnHover: true,
+		pauseOnFocus: true,
+		rewind: false,
+	};
+}
+
+function setAutoScrollConfig( config, settings, breakpoint ) {
+	const enabled = getResponsiveValue(
+		settings.autoScrollBreakpoints,
+		breakpoint,
+		getResponsiveValue( settings.autoScrollBreakpoints, 'desktop', true )
+	);
+
+	if ( enabled ) {
+		config.drag = 'free';
+		config.focus = 'center';
+		config.autoWidth = config.direction !== 'ttb' && ! settings.fixedWidth;
+		config.autoScroll = getAutoScrollConfig( settings );
+		return;
+	}
+
+	config.drag = true;
+	config.focus = 0;
+	config.autoWidth = false;
+	config.autoScroll = false;
 }
 
 function getBlockStyle( blockEl ) {
@@ -186,23 +221,16 @@ function setupCarousel( blockEl, settings ) {
 
 	// Auto-scroll: continuous linear scroll via Splide's AutoScroll extension.
 	// Requires type:'loop' and is incompatible with autoplay/pagination/arrows.
-		// autoWidth lets horizontal marquees size each slide to its content.
-		// Vertical carousels need normal perPage/fixedHeight sizing instead.
-		if ( settings.autoScroll ) {
-			splideConfig.type = 'loop';
-			splideConfig.autoplay = false;
-			splideConfig.arrows = false;
-			splideConfig.pagination = false;
-			splideConfig.drag = 'free';
-			splideConfig.focus = 'center';
-			splideConfig.autoWidth = splideConfig.direction !== 'ttb' && ! settings.fixedWidth;
-			splideConfig.autoScroll = {
-				speed: settings.autoScrollSpeed,
-				pauseOnHover: true,
-			pauseOnFocus: true,
-			rewind: false,
-		};
-	}
+	if ( settings.autoScroll ) {
+		splideConfig.type = 'loop';
+		splideConfig.autoplay = false;
+		splideConfig.arrows = false;
+		splideConfig.pagination = false;
+		setAutoScrollConfig( splideConfig, settings, 'desktop' );
+		Object.entries( BREAKPOINTS ).forEach( ( [ breakpoint, width ] ) => {
+			setAutoScrollConfig( splideConfig.breakpoints[ width ], settings, breakpoint );
+		} );
+		}
 
 	// Force disable pagination if thumbnail carousel is enabled.
 	if ( settings.hasThumbnailPagination ) {
@@ -444,6 +472,10 @@ function initCarouselBlock( blockEl ) {
 		gap: blockEl.dataset.gap || '1.5rem',
 		padding: blockEl.dataset.padding ? { ...DEFAULT_PADDING, ...parseJsonDataAttribute( blockEl.dataset.padding, DEFAULT_PADDING ) } : null,
 		autoScroll: blockEl.dataset.autoScroll === 'true',
+		autoScrollBreakpoints: normalizeResponsiveSetting(
+			parseJsonDataAttribute( blockEl.dataset.autoScrollBreakpoints, DEFAULT_RESPONSIVE_BOOLEAN ),
+			DEFAULT_RESPONSIVE_BOOLEAN
+		),
 		autoScrollSpeed: blockEl.dataset.autoScrollSpeed !== undefined ? parseFloat(blockEl.dataset.autoScrollSpeed) : 1,
 	};
 

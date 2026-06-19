@@ -47,6 +47,11 @@ const DEFAULT_RESPONSIVE_LENGTH = {
 	tablet: '',
 	mobile: '',
 };
+const DEFAULT_RESPONSIVE_BOOLEAN = {
+	desktop: true,
+	tablet: true,
+	mobile: true,
+};
 const DEFAULT_PADDING = {
 	left: '',
 	right: '',
@@ -67,12 +72,13 @@ const DIRECTION_OPTIONS = [
  */
 function Edit( props ) {
 	const { clientId, attributes, setAttributes } = props;
-	const { layout, hasTabNav, hasPagination, hasNavButtons, type, autoplay, interval, speed, easing, moveSlidesIndividually, hasThumbnailPagination, thumbnailCount, slidesPerPage, direction, height, fixedHeight, thumbnailNavType, arrowPosition, fixedWidth, padding, gap, autoScroll, autoScrollSpeed } = attributes;
+	const { layout, hasTabNav, hasPagination, hasNavButtons, type, autoplay, interval, speed, easing, moveSlidesIndividually, hasThumbnailPagination, thumbnailCount, slidesPerPage, direction, height, fixedHeight, thumbnailNavType, arrowPosition, fixedWidth, padding, gap, autoScroll, autoScrollBreakpoints, autoScrollSpeed } = attributes;
 
 	const isArticlesCarousel = layout === 'articles-carousel';
 	const carouselDirection = { ...DEFAULT_DIRECTION, ...direction };
 	const carouselHeight = { ...DEFAULT_RESPONSIVE_LENGTH, ...height };
 	const carouselFixedHeight = { ...DEFAULT_RESPONSIVE_LENGTH, ...fixedHeight };
+	const carouselAutoScrollBreakpoints = { ...DEFAULT_RESPONSIVE_BOOLEAN, ...autoScrollBreakpoints };
 	const trackPadding = { ...DEFAULT_PADDING, ...padding };
 	const setResponsiveAttribute = ( attributeName, currentValue, breakpoint, value ) => {
 		setAttributes( {
@@ -190,16 +196,33 @@ function Edit( props ) {
 						help={ __( 'Continuously scroll the slides at a constant speed. Best for non-interactive content like logo strips. Forces loop type and disables autoplay, arrows, and pagination.', 'hm-carousel' ) }
 						onChange={ ( value ) => setAttributes( { autoScroll: value } ) }
 					/>
-					{ autoScroll && (
-						<RangeControl
-							label={ __( 'Auto-scroll Speed (pixels per frame)', 'hm-carousel' ) }
-							value={ autoScrollSpeed }
-							onChange={ ( value ) => setAttributes( { autoScrollSpeed: value } ) }
-							min={ 0.1 }
-							max={ 5 }
-							step={ 0.1 }
-						/>
-					) }
+						{ autoScroll && (
+							<>
+								<RangeControl
+									label={ __( 'Auto-scroll Speed (pixels per frame)', 'hm-carousel' ) }
+									value={ autoScrollSpeed }
+									onChange={ ( value ) => setAttributes( { autoScrollSpeed: value } ) }
+									min={ 0.1 }
+									max={ 5 }
+									step={ 0.1 }
+								/>
+								<ToggleControl
+									label={ __( 'Auto-scroll on desktop', 'hm-carousel' ) }
+									checked={ carouselAutoScrollBreakpoints.desktop }
+									onChange={ ( value ) => setResponsiveAttribute( 'autoScrollBreakpoints', carouselAutoScrollBreakpoints, 'desktop', value ) }
+								/>
+								<ToggleControl
+									label={ __( 'Auto-scroll on tablet', 'hm-carousel' ) }
+									checked={ carouselAutoScrollBreakpoints.tablet }
+									onChange={ ( value ) => setResponsiveAttribute( 'autoScrollBreakpoints', carouselAutoScrollBreakpoints, 'tablet', value ) }
+								/>
+								<ToggleControl
+									label={ __( 'Auto-scroll on mobile', 'hm-carousel' ) }
+									checked={ carouselAutoScrollBreakpoints.mobile }
+									onChange={ ( value ) => setResponsiveAttribute( 'autoScrollBreakpoints', carouselAutoScrollBreakpoints, 'mobile', value ) }
+								/>
+							</>
+						) }
 					<TextControl
 						label={ __( 'Slide Gap', 'hm-carousel' ) }
 						help={ __( 'CSS length for the space between slides (e.g. 1.5rem, 48px). Splide reads this to position slides; setting it via CSS alone causes loop math to drift.', 'hm-carousel' ) }
