@@ -14,6 +14,7 @@ if ( $p->next_tag( [ 'tag_name' => 'div', 'class_name' => 'hm-carousel' ] ) ) {
 	$p->set_attribute( 'data-autoplay', $attributes['autoplay'] ? 'true' : 'false' );
 	$p->set_attribute( 'data-interval', $attributes['interval'] );
 	$p->set_attribute( 'data-auto-scroll', ! empty( $attributes['autoScroll'] ) ? 'true' : 'false' );
+	$p->set_attribute( 'data-auto-scroll-breakpoints', wp_json_encode( $attributes['autoScrollBreakpoints'] ) );
 	$p->set_attribute( 'data-auto-scroll-speed', isset( $attributes['autoScrollSpeed'] ) ? (string) $attributes['autoScrollSpeed'] : '1' );
 	$p->set_attribute( 'data-speed', $attributes['speed'] );
 	$p->set_attribute( 'data-easing', $attributes['easing'] );
