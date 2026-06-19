@@ -21,6 +21,9 @@ if ( $p->next_tag( [ 'tag_name' => 'div', 'class_name' => 'hm-carousel' ] ) ) {
 	$p->set_attribute( 'data-has-thumbnail-pagination', $attributes['hasThumbnailPagination'] ? 'true' : 'false' );
 	$p->set_attribute( 'data-thumbnail-count', wp_json_encode( $attributes['thumbnailCount'] ) );
 	$p->set_attribute( 'data-slides-per-page', wp_json_encode( $attributes['slidesPerPage'] ) );
+	$p->set_attribute( 'data-direction', wp_json_encode( $attributes['direction'] ) );
+	$p->set_attribute( 'data-height', wp_json_encode( $attributes['height'] ) );
+	$p->set_attribute( 'data-fixed-height', wp_json_encode( $attributes['fixedHeight'] ) );
 	$p->set_attribute( 'data-thumbnail-nav-type', $attributes['thumbnailNavType'] );
 	if ( isset( $attributes['arrowPosition'] ) && $attributes['arrowPosition'] && $attributes['arrowPosition'] !== 'default' ) {
 		$p->set_attribute( 'data-arrow-position', $attributes['arrowPosition'] );
@@ -31,7 +34,15 @@ if ( $p->next_tag( [ 'tag_name' => 'div', 'class_name' => 'hm-carousel' ] ) ) {
 	if ( ! empty( $attributes['gap'] ) ) {
 		$p->set_attribute( 'data-gap', $attributes['gap'] );
 	}
-	if ( ! empty( $attributes['padding'] ) && ( ! empty( $attributes['padding']['left'] ) || ! empty( $attributes['padding']['right'] ) ) ) {
+	if (
+		! empty( $attributes['padding'] )
+		&& (
+			! empty( $attributes['padding']['left'] )
+			|| ! empty( $attributes['padding']['right'] )
+			|| ! empty( $attributes['padding']['top'] )
+			|| ! empty( $attributes['padding']['bottom'] )
+		)
+	) {
 		$p->set_attribute( 'data-padding', wp_json_encode( $attributes['padding'] ) );
 	}
 }

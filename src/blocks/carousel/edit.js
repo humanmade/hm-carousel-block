@@ -37,6 +37,27 @@ const ARTICLES_CAROUSEL_TEMPLATE = [
 		],
 	],
 ];
+const DEFAULT_DIRECTION = {
+	desktop: 'ltr',
+	tablet: 'ltr',
+	mobile: 'ltr',
+};
+const DEFAULT_RESPONSIVE_LENGTH = {
+	desktop: '',
+	tablet: '',
+	mobile: '',
+};
+const DEFAULT_PADDING = {
+	left: '',
+	right: '',
+	top: '',
+	bottom: '',
+};
+const DIRECTION_OPTIONS = [
+	{ label: __( 'Left to right', 'hm-carousel' ), value: 'ltr' },
+	{ label: __( 'Right to left', 'hm-carousel' ), value: 'rtl' },
+	{ label: __( 'Top to bottom', 'hm-carousel' ), value: 'ttb' },
+];
 
 /**
  * Provide an interface for editing the block.
@@ -46,9 +67,21 @@ const ARTICLES_CAROUSEL_TEMPLATE = [
  */
 function Edit( props ) {
 	const { clientId, attributes, setAttributes } = props;
-	const { layout, hasTabNav, hasPagination, hasNavButtons, type, autoplay, interval, speed, easing, moveSlidesIndividually, hasThumbnailPagination, thumbnailCount, slidesPerPage, thumbnailNavType, arrowPosition, fixedWidth, padding, gap, autoScroll, autoScrollSpeed } = attributes;
+	const { layout, hasTabNav, hasPagination, hasNavButtons, type, autoplay, interval, speed, easing, moveSlidesIndividually, hasThumbnailPagination, thumbnailCount, slidesPerPage, direction, height, fixedHeight, thumbnailNavType, arrowPosition, fixedWidth, padding, gap, autoScroll, autoScrollSpeed } = attributes;
 
 	const isArticlesCarousel = layout === 'articles-carousel';
+	const carouselDirection = { ...DEFAULT_DIRECTION, ...direction };
+	const carouselHeight = { ...DEFAULT_RESPONSIVE_LENGTH, ...height };
+	const carouselFixedHeight = { ...DEFAULT_RESPONSIVE_LENGTH, ...fixedHeight };
+	const trackPadding = { ...DEFAULT_PADDING, ...padding };
+	const setResponsiveAttribute = ( attributeName, currentValue, breakpoint, value ) => {
+		setAttributes( {
+			[ attributeName ]: {
+				...currentValue,
+				[ breakpoint ]: value,
+			},
+		} );
+	};
 
 	// Determine allowed blocks and template based on layout
 	const allowedBlocks = isArticlesCarousel ? ALLOWED_BLOCKS_ARTICLES : ALLOWED_BLOCK;
@@ -241,6 +274,28 @@ function Edit( props ) {
 					</PanelBody>
 				) }
 				{ ( type === 'loop' || type === 'slide' ) && (
+					<PanelBody title={ __( 'Carousel Direction', 'hm-carousel' ) } initialOpen={ false }>
+						<SelectControl
+							label={ __( 'Direction (Desktop)', 'hm-carousel' ) }
+							value={ carouselDirection.desktop }
+							options={ DIRECTION_OPTIONS }
+							onChange={ ( value ) => setResponsiveAttribute( 'direction', carouselDirection, 'desktop', value ) }
+						/>
+						<SelectControl
+							label={ __( 'Direction (Tablet)', 'hm-carousel' ) }
+							value={ carouselDirection.tablet }
+							options={ DIRECTION_OPTIONS }
+							onChange={ ( value ) => setResponsiveAttribute( 'direction', carouselDirection, 'tablet', value ) }
+						/>
+						<SelectControl
+							label={ __( 'Direction (Mobile)', 'hm-carousel' ) }
+							value={ carouselDirection.mobile }
+							options={ DIRECTION_OPTIONS }
+							onChange={ ( value ) => setResponsiveAttribute( 'direction', carouselDirection, 'mobile', value ) }
+						/>
+					</PanelBody>
+				) }
+				{ ( type === 'loop' || type === 'slide' ) && (
 					<PanelBody title={ __( 'Slide Sizing', 'hm-carousel' ) } initialOpen={ false }>
 						<TextControl
 							label={ __( 'Fixed slide width', 'hm-carousel' ) }
@@ -249,16 +304,60 @@ function Edit( props ) {
 							help={ __( 'Optional. CSS length (e.g. "900px" or "60rem"). When set, each slide is sized to this width regardless of slides-per-page; useful for full-bleed carousels with consistent slide widths.', 'hm-carousel' ) }
 						/>
 						<TextControl
+							label={ __( 'Carousel height (Desktop)', 'hm-carousel' ) }
+							value={ carouselHeight.desktop }
+							onChange={ ( value ) => setResponsiveAttribute( 'height', carouselHeight, 'desktop', value ) }
+							help={ __( 'Optional. CSS length for the carousel height. Required by Splide for top-to-bottom carousels.', 'hm-carousel' ) }
+						/>
+						<TextControl
+							label={ __( 'Carousel height (Tablet)', 'hm-carousel' ) }
+							value={ carouselHeight.tablet }
+							onChange={ ( value ) => setResponsiveAttribute( 'height', carouselHeight, 'tablet', value ) }
+						/>
+						<TextControl
+							label={ __( 'Carousel height (Mobile)', 'hm-carousel' ) }
+							value={ carouselHeight.mobile }
+							onChange={ ( value ) => setResponsiveAttribute( 'height', carouselHeight, 'mobile', value ) }
+						/>
+						<TextControl
+							label={ __( 'Fixed slide height (Desktop)', 'hm-carousel' ) }
+							value={ carouselFixedHeight.desktop }
+							onChange={ ( value ) => setResponsiveAttribute( 'fixedHeight', carouselFixedHeight, 'desktop', value ) }
+							help={ __( 'Optional. CSS length that fixes each slide to this height. When set, Splide ignores slides-per-page height calculations.', 'hm-carousel' ) }
+						/>
+						<TextControl
+							label={ __( 'Fixed slide height (Tablet)', 'hm-carousel' ) }
+							value={ carouselFixedHeight.tablet }
+							onChange={ ( value ) => setResponsiveAttribute( 'fixedHeight', carouselFixedHeight, 'tablet', value ) }
+						/>
+						<TextControl
+							label={ __( 'Fixed slide height (Mobile)', 'hm-carousel' ) }
+							value={ carouselFixedHeight.mobile }
+							onChange={ ( value ) => setResponsiveAttribute( 'fixedHeight', carouselFixedHeight, 'mobile', value ) }
+						/>
+						<TextControl
 							label={ __( 'Track padding (left)', 'hm-carousel' ) }
-							value={ padding?.left || '' }
-							onChange={ ( value ) => setAttributes( { padding: { ...padding, left: value } } ) }
+							value={ trackPadding.left }
+							onChange={ ( value ) => setAttributes( { padding: { ...trackPadding, left: value } } ) }
 							help={ __( 'Optional. CSS length to inset slides from the left edge of the carousel container. Useful for full-bleed carousels where the first slide should align with the content area.', 'hm-carousel' ) }
 						/>
 						<TextControl
 							label={ __( 'Track padding (right)', 'hm-carousel' ) }
-							value={ padding?.right || '' }
-							onChange={ ( value ) => setAttributes( { padding: { ...padding, right: value } } ) }
+							value={ trackPadding.right }
+							onChange={ ( value ) => setAttributes( { padding: { ...trackPadding, right: value } } ) }
 							help={ __( 'Optional. CSS length to inset slides from the right edge of the carousel container.', 'hm-carousel' ) }
+						/>
+						<TextControl
+							label={ __( 'Track padding (top)', 'hm-carousel' ) }
+							value={ trackPadding.top }
+							onChange={ ( value ) => setAttributes( { padding: { ...trackPadding, top: value } } ) }
+							help={ __( 'Optional. CSS length to inset slides from the top edge of a top-to-bottom carousel.', 'hm-carousel' ) }
+						/>
+						<TextControl
+							label={ __( 'Track padding (bottom)', 'hm-carousel' ) }
+							value={ trackPadding.bottom }
+							onChange={ ( value ) => setAttributes( { padding: { ...trackPadding, bottom: value } } ) }
+							help={ __( 'Optional. CSS length to inset slides from the bottom edge of a top-to-bottom carousel.', 'hm-carousel' ) }
 						/>
 					</PanelBody>
 				) }

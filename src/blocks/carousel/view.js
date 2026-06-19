@@ -5,6 +5,80 @@ import { AutoScroll } from '@splidejs/splide-extension-auto-scroll';
 let Splide = null;
 
 const BLOCK_STYLES =  [ 'timeline' ];
+const DEFAULT_DIRECTION = {
+	desktop: 'ltr',
+	tablet: 'ltr',
+	mobile: 'ltr',
+};
+const DEFAULT_RESPONSIVE_LENGTH = {
+	desktop: '',
+	tablet: '',
+	mobile: '',
+};
+const DEFAULT_PADDING = {
+	left: '',
+	right: '',
+	top: '',
+	bottom: '',
+};
+const BREAKPOINTS = {
+	tablet: 1024,
+	mobile: 768,
+};
+
+function parseJsonDataAttribute( value, fallback ) {
+	if ( ! value ) {
+		return fallback;
+	}
+
+	try {
+		return JSON.parse( value );
+	} catch ( error ) {
+		return fallback;
+	}
+}
+
+function normalizeResponsiveSetting( value, fallback ) {
+	if ( typeof value === 'string' ) {
+		return {
+			...fallback,
+			desktop: value,
+			tablet: value,
+			mobile: value,
+		};
+	}
+
+	return {
+		...fallback,
+		...( value || {} ),
+	};
+}
+
+function getResponsiveValue( setting, breakpoint, fallback = '' ) {
+	return setting?.[ breakpoint ] ?? fallback;
+}
+
+function addResponsiveLength( config, option, values, breakpoint ) {
+	const desktopValue = getResponsiveValue( values, 'desktop' );
+	const value = getResponsiveValue( values, breakpoint );
+
+	if ( value || ( breakpoint !== 'desktop' && desktopValue ) ) {
+		config[ option ] = value;
+	}
+}
+
+function getTrackPadding( padding, direction ) {
+	const paddingConfig = {};
+	const axis = direction === 'ttb' ? [ 'top', 'bottom' ] : [ 'left', 'right' ];
+
+	axis.forEach( ( side ) => {
+		if ( padding?.[ side ] ) {
+			paddingConfig[ side ] = padding[ side ];
+		}
+	} );
+
+	return Object.keys( paddingConfig ).length ? paddingConfig : null;
+}
 
 function getBlockStyle( blockEl ) {
 	const styles = BLOCK_STYLES;
@@ -84,6 +158,7 @@ function setupCarousel( blockEl, settings ) {
 		pagination: settings.hasPagination,
 		arrows: settings.hasNavButtons,
 		rewind: false,
+		direction: getResponsiveValue( settings.direction, 'desktop', 'ltr' ),
 		perPage: columns || (settings.type === 'fade' ? 1 : settings.slidesPerPage.desktop),
 		autoplay: settings.autoplay,
 		pauseOnHover: settings.autoplay,
@@ -91,14 +166,23 @@ function setupCarousel( blockEl, settings ) {
 		easing: settings.easing,
 		gap: settings.gap,
 		breakpoints: {
-			1024: {
+			[ BREAKPOINTS.tablet ]: {
+				direction: getResponsiveValue( settings.direction, 'tablet', getResponsiveValue( settings.direction, 'desktop', 'ltr' ) ),
 				perPage: columns || settings.slidesPerPage.tablet,
 			},
-			768: {
+			[ BREAKPOINTS.mobile ]: {
+				direction: getResponsiveValue( settings.direction, 'mobile', getResponsiveValue( settings.direction, 'tablet', getResponsiveValue( settings.direction, 'desktop', 'ltr' ) ) ),
 				perPage: columns || settings.slidesPerPage.mobile,
 			},
 		},
 	};
+
+	addResponsiveLength( splideConfig, 'height', settings.height, 'desktop' );
+	addResponsiveLength( splideConfig, 'fixedHeight', settings.fixedHeight, 'desktop' );
+	Object.entries( BREAKPOINTS ).forEach( ( [ breakpoint, width ] ) => {
+		addResponsiveLength( splideConfig.breakpoints[ width ], 'height', settings.height, breakpoint );
+		addResponsiveLength( splideConfig.breakpoints[ width ], 'fixedHeight', settings.fixedHeight, breakpoint );
+	} );
 
 	// Auto-scroll: continuous linear scroll via Splide's AutoScroll extension.
 	// Requires type:'loop' and is incompatible with autoplay/pagination/arrows.
@@ -141,15 +225,22 @@ function setupCarousel( blockEl, settings ) {
 	}
 
 	// Track padding — inset slides from the edges of the carousel container.
-	// Accepts left/right values; both default to 0 when one is omitted.
+	// Horizontal tracks use left/right and vertical tracks use top/bottom.
 	if ( settings.padding ) {
-		splideConfig.padding = {};
-		if ( settings.padding.left ) {
-			splideConfig.padding.left = settings.padding.left;
+		const desktopPadding = getTrackPadding( settings.padding, splideConfig.direction );
+		if ( desktopPadding ) {
+			splideConfig.padding = desktopPadding;
 		}
-		if ( settings.padding.right ) {
-			splideConfig.padding.right = settings.padding.right;
-		}
+		Object.values( BREAKPOINTS ).forEach( ( width ) => {
+			const breakpointPadding = getTrackPadding(
+				settings.padding,
+				splideConfig.breakpoints[ width ].direction
+			);
+
+			if ( breakpointPadding ) {
+				splideConfig.breakpoints[ width ].padding = breakpointPadding;
+			}
+		} );
 	}
 
 	return new Splide( blockEl, splideConfig );
@@ -338,10 +429,22 @@ function initCarouselBlock( blockEl ) {
 		hasThumbnailPagination: blockEl.dataset.hasPagination === 'true' && blockEl.dataset.hasThumbnailPagination === 'true',
 		thumbnailCount: JSON.parse(blockEl.dataset.thumbnailCount),
 		slidesPerPage: JSON.parse(blockEl.dataset.slidesPerPage),
+		direction: normalizeResponsiveSetting(
+			parseJsonDataAttribute( blockEl.dataset.direction, DEFAULT_DIRECTION ),
+			DEFAULT_DIRECTION
+		),
+		height: normalizeResponsiveSetting(
+			parseJsonDataAttribute( blockEl.dataset.height, DEFAULT_RESPONSIVE_LENGTH ),
+			DEFAULT_RESPONSIVE_LENGTH
+		),
+		fixedHeight: normalizeResponsiveSetting(
+			parseJsonDataAttribute( blockEl.dataset.fixedHeight, DEFAULT_RESPONSIVE_LENGTH ),
+			DEFAULT_RESPONSIVE_LENGTH
+		),
 		thumbnailNavType: blockEl.dataset.thumbnailNavType || 'pagination',
 		fixedWidth: blockEl.dataset.fixedWidth || '',
 		gap: blockEl.dataset.gap || '1.5rem',
-		padding: blockEl.dataset.padding ? JSON.parse(blockEl.dataset.padding) : null,
+		padding: blockEl.dataset.padding ? { ...DEFAULT_PADDING, ...parseJsonDataAttribute( blockEl.dataset.padding, DEFAULT_PADDING ) } : null,
 		autoScroll: blockEl.dataset.autoScroll === 'true',
 		autoScrollSpeed: blockEl.dataset.autoScrollSpeed !== undefined ? parseFloat(blockEl.dataset.autoScrollSpeed) : 1,
 	};
