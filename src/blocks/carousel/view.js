@@ -287,11 +287,14 @@ function setupResponsivePositionReset( carousel ) {
 			return;
 		}
 
-		// AutoScroll can reapply its previous translate after breakpoint
-		// updates; reposition after all responsive option handlers finish.
+		// AutoScroll can reapply its previous clone translate after breakpoint
+		// updates; reset after all responsive option handlers finish.
 		window.requestAnimationFrame( () => {
-			carousel.Components.Move.reposition();
-			carousel.Components.Slides.update();
+			window.requestAnimationFrame( () => {
+				carousel.Components.Controller.setIndex( 0 );
+				carousel.Components.Move.jump( 0 );
+				carousel.Components.Slides.update();
+			} );
 		} );
 	} );
 }
