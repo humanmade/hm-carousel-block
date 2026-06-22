@@ -270,6 +270,32 @@ function setupNav( blockEl, settings ) {
 	return navEl;
 }
 
+function setupResponsivePositionReset( carousel ) {
+	let previousDirection = carousel.options.direction;
+	let previousAutoScroll = carousel.options.autoScroll !== false;
+
+	carousel.on( 'updated', () => {
+		const currentDirection = carousel.options.direction;
+		const currentAutoScroll = carousel.options.autoScroll !== false;
+		const directionChanged = previousDirection !== currentDirection;
+		const autoScrollChanged = previousAutoScroll !== currentAutoScroll;
+
+		previousDirection = currentDirection;
+		previousAutoScroll = currentAutoScroll;
+
+		if ( ! directionChanged && ! autoScrollChanged ) {
+			return;
+		}
+
+		// AutoScroll can reapply its previous translate after breakpoint
+		// updates; reposition after all responsive option handlers finish.
+		window.requestAnimationFrame( () => {
+			carousel.Components.Move.reposition();
+			carousel.Components.Slides.update();
+		} );
+	} );
+}
+
 /**
  * carousel block.
  *
@@ -360,6 +386,8 @@ function initCarouselBlock( blockEl ) {
 	} else {
 		carousel.mount( extensions );
 	}
+
+	setupResponsivePositionReset( carousel );
 }
 
 /**
