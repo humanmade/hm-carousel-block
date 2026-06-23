@@ -4,7 +4,6 @@ import {
 	BREAKPOINTS,
 	DEFAULT_DIRECTION,
 	DEFAULT_PADDING,
-	DEFAULT_RESPONSIVE_BOOLEAN,
 	DEFAULT_RESPONSIVE_LENGTH,
 	createSplideConfig,
 	normalizeResponsiveSetting,
@@ -272,18 +271,14 @@ function setupNav( blockEl, settings ) {
 
 function setupResponsivePositionReset( carousel ) {
 	let previousDirection = carousel.options.direction;
-	let previousAutoScroll = carousel.options.autoScroll !== false;
 
 	carousel.on( 'updated', () => {
 		const currentDirection = carousel.options.direction;
-		const currentAutoScroll = carousel.options.autoScroll !== false;
 		const directionChanged = previousDirection !== currentDirection;
-		const autoScrollChanged = previousAutoScroll !== currentAutoScroll;
 
 		previousDirection = currentDirection;
-		previousAutoScroll = currentAutoScroll;
 
-		if ( ! directionChanged && ! autoScrollChanged ) {
+		if ( ! directionChanged ) {
 			return;
 		}
 
@@ -359,13 +354,6 @@ function initCarouselBlock( blockEl ) {
 			  }
 			: null,
 		autoScroll: blockEl.dataset.autoScroll === 'true',
-		autoScrollBreakpoints: normalizeResponsiveSetting(
-			parseJsonDataAttribute(
-				blockEl.dataset.autoScrollBreakpoints,
-				DEFAULT_RESPONSIVE_BOOLEAN
-			),
-			DEFAULT_RESPONSIVE_BOOLEAN
-		),
 		autoScrollSpeed:
 			blockEl.dataset.autoScrollSpeed !== undefined
 				? parseFloat( blockEl.dataset.autoScrollSpeed )

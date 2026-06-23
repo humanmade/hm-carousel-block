@@ -37,11 +37,6 @@ const defaultSettings = {
 	},
 	padding: null,
 	autoScroll: false,
-	autoScrollBreakpoints: {
-		desktop: true,
-		tablet: true,
-		mobile: true,
-	},
 	autoScrollSpeed: 1,
 	hasThumbnailPagination: false,
 	moveSlidesIndividually: false,
@@ -93,14 +88,9 @@ test( 'clears inherited vertical height when a breakpoint switches to horizontal
 	assert.equal( config.breakpoints[ BREAKPOINTS.mobile ].height, '' );
 } );
 
-test( 'restores configured controls when Auto-scroll is disabled at a breakpoint', () => {
+test( 'keeps Auto-scroll active while sizing follows responsive direction', () => {
 	const config = buildConfig( {
 		autoScroll: true,
-		autoScrollBreakpoints: {
-			desktop: true,
-			tablet: false,
-			mobile: false,
-		},
 		direction: {
 			desktop: 'ttb',
 			tablet: 'ltr',
@@ -113,52 +103,32 @@ test( 'restores configured controls when Auto-scroll is disabled at a breakpoint
 	assert.equal( config.arrows, false );
 	assert.equal( config.pagination, false );
 	assert.equal( typeof config.autoScroll, 'object' );
+	assert.equal( config.autoWidth, false );
 
+	assert.equal( config.breakpoints[ BREAKPOINTS.tablet ].type, 'loop' );
+	assert.equal( config.breakpoints[ BREAKPOINTS.tablet ].autoplay, false );
+	assert.equal( config.breakpoints[ BREAKPOINTS.tablet ].arrows, false );
+	assert.equal( config.breakpoints[ BREAKPOINTS.tablet ].pagination, false );
 	assert.equal(
-		config.breakpoints[ BREAKPOINTS.tablet ].type,
-		defaultSettings.type
+		typeof config.breakpoints[ BREAKPOINTS.tablet ].autoScroll,
+		'object'
 	);
-	assert.equal(
-		config.breakpoints[ BREAKPOINTS.tablet ].autoplay,
-		defaultSettings.autoplay
-	);
-	assert.equal(
-		config.breakpoints[ BREAKPOINTS.tablet ].arrows,
-		defaultSettings.hasNavButtons
-	);
-	assert.equal(
-		config.breakpoints[ BREAKPOINTS.tablet ].pagination,
-		defaultSettings.hasPagination
-	);
-	assert.equal( config.breakpoints[ BREAKPOINTS.tablet ].autoScroll, false );
+	assert.equal( config.breakpoints[ BREAKPOINTS.tablet ].autoWidth, true );
 
+	assert.equal( config.breakpoints[ BREAKPOINTS.mobile ].type, 'loop' );
+	assert.equal( config.breakpoints[ BREAKPOINTS.mobile ].autoplay, false );
+	assert.equal( config.breakpoints[ BREAKPOINTS.mobile ].arrows, false );
+	assert.equal( config.breakpoints[ BREAKPOINTS.mobile ].pagination, false );
 	assert.equal(
-		config.breakpoints[ BREAKPOINTS.mobile ].type,
-		defaultSettings.type
+		typeof config.breakpoints[ BREAKPOINTS.mobile ].autoScroll,
+		'object'
 	);
-	assert.equal(
-		config.breakpoints[ BREAKPOINTS.mobile ].autoplay,
-		defaultSettings.autoplay
-	);
-	assert.equal(
-		config.breakpoints[ BREAKPOINTS.mobile ].arrows,
-		defaultSettings.hasNavButtons
-	);
-	assert.equal(
-		config.breakpoints[ BREAKPOINTS.mobile ].pagination,
-		defaultSettings.hasPagination
-	);
-	assert.equal( config.breakpoints[ BREAKPOINTS.mobile ].autoScroll, false );
+	assert.equal( config.breakpoints[ BREAKPOINTS.mobile ].autoWidth, true );
 } );
 
 test( 'keeps thumbnail pagination controls disabled across breakpoints', () => {
 	const config = buildConfig( {
 		autoScroll: true,
-		autoScrollBreakpoints: {
-			desktop: true,
-			tablet: false,
-			mobile: false,
-		},
 		hasThumbnailPagination: true,
 	} );
 

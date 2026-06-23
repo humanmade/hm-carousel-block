@@ -10,12 +10,6 @@ export const DEFAULT_RESPONSIVE_LENGTH = {
 	mobile: '',
 };
 
-export const DEFAULT_RESPONSIVE_BOOLEAN = {
-	desktop: true,
-	tablet: true,
-	mobile: true,
-};
-
 export const DEFAULT_PADDING = {
 	left: '',
 	right: '',
@@ -148,37 +142,15 @@ function getAutoScrollConfig( settings ) {
 	};
 }
 
-function isAutoScrollEnabled( settings, breakpoint ) {
-	return getResponsiveValue(
-		settings.autoScrollBreakpoints,
-		breakpoint,
-		getResponsiveValue( settings.autoScrollBreakpoints, 'desktop', true )
-	);
-}
-
-function setAutoScrollConfig( config, settings, breakpoint ) {
-	const enabled = isAutoScrollEnabled( settings, breakpoint );
-
-	if ( enabled ) {
-		config.type = 'loop';
-		config.autoplay = false;
-		config.arrows = false;
-		config.pagination = false;
-		config.drag = 'free';
-		config.focus = 'center';
-		config.autoWidth = config.direction !== 'ttb' && ! settings.fixedWidth;
-		config.autoScroll = getAutoScrollConfig( settings );
-		return;
-	}
-
-	config.type = settings.type;
-	config.autoplay = settings.autoplay;
-	config.arrows = settings.hasNavButtons;
-	config.pagination = settings.hasPagination;
-	config.drag = true;
-	config.focus = 0;
-	config.autoWidth = false;
-	config.autoScroll = false;
+function setAutoScrollConfig( config, settings ) {
+	config.type = 'loop';
+	config.autoplay = false;
+	config.arrows = false;
+	config.pagination = false;
+	config.drag = 'free';
+	config.focus = 'center';
+	config.autoWidth = config.direction !== 'ttb' && ! settings.fixedWidth;
+	config.autoScroll = getAutoScrollConfig( settings );
 }
 
 export function createSplideConfig( settings, columns = null ) {
@@ -194,16 +166,11 @@ export function createSplideConfig( settings, columns = null ) {
 		settings.fixedHeight,
 		DEFAULT_RESPONSIVE_LENGTH
 	);
-	const autoScrollBreakpoints = normalizeResponsiveSetting(
-		settings.autoScrollBreakpoints,
-		DEFAULT_RESPONSIVE_BOOLEAN
-	);
 	const configSettings = {
 		...settings,
 		direction: directions,
 		height: heights,
 		fixedHeight: fixedHeights,
-		autoScrollBreakpoints,
 	};
 	const desktopDirection = getResponsiveDirection( directions, 'desktop' );
 	const tabletDirection = getResponsiveDirection( directions, 'tablet' );
@@ -271,12 +238,11 @@ export function createSplideConfig( settings, columns = null ) {
 	} );
 
 	if ( settings.autoScroll ) {
-		setAutoScrollConfig( splideConfig, configSettings, 'desktop' );
-		Object.entries( BREAKPOINTS ).forEach( ( [ breakpoint, width ] ) => {
+		setAutoScrollConfig( splideConfig, configSettings );
+		Object.values( BREAKPOINTS ).forEach( ( width ) => {
 			setAutoScrollConfig(
 				splideConfig.breakpoints[ width ],
-				configSettings,
-				breakpoint
+				configSettings
 			);
 		} );
 	}

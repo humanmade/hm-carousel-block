@@ -14,7 +14,6 @@ import TabNav from './components/tab-nav';
 import {
 	DEFAULT_DIRECTION,
 	DEFAULT_PADDING,
-	DEFAULT_RESPONSIVE_BOOLEAN,
 	DEFAULT_RESPONSIVE_LENGTH,
 } from './config.mjs';
 
@@ -82,7 +81,6 @@ function Edit( props ) {
 		padding,
 		gap,
 		autoScroll,
-		autoScrollBreakpoints,
 		autoScrollSpeed,
 	} = attributes;
 
@@ -92,10 +90,6 @@ function Edit( props ) {
 	const carouselFixedHeight = {
 		...DEFAULT_RESPONSIVE_LENGTH,
 		...fixedHeight,
-	};
-	const carouselAutoScrollBreakpoints = {
-		...DEFAULT_RESPONSIVE_BOOLEAN,
-		...autoScrollBreakpoints,
 	};
 	const trackPadding = { ...DEFAULT_PADDING, ...padding };
 	const setResponsiveAttribute = (
@@ -296,7 +290,7 @@ function Edit( props ) {
 						label={ __( 'Auto-scroll', 'hm-carousel' ) }
 						checked={ autoScroll }
 						help={ __(
-							'Continuously scroll the slides at a constant speed. Breakpoints with Auto-scroll disabled use the configured carousel type, autoplay, arrows, and pagination.',
+							'Continuously scroll the slides at a constant speed. Best for non-interactive content like logo strips. Forces loop type and disables autoplay, arrows, and pagination.',
 							'hm-carousel'
 						) }
 						onChange={ ( value ) =>
@@ -317,53 +311,6 @@ function Edit( props ) {
 								min={ 0.1 }
 								max={ 5 }
 								step={ 0.1 }
-							/>
-							<ToggleControl
-								label={ __(
-									'Auto-scroll on desktop',
-									'hm-carousel'
-								) }
-								checked={
-									carouselAutoScrollBreakpoints.desktop
-								}
-								onChange={ ( value ) =>
-									setResponsiveAttribute(
-										'autoScrollBreakpoints',
-										carouselAutoScrollBreakpoints,
-										'desktop',
-										value
-									)
-								}
-							/>
-							<ToggleControl
-								label={ __(
-									'Auto-scroll on tablet',
-									'hm-carousel'
-								) }
-								checked={ carouselAutoScrollBreakpoints.tablet }
-								onChange={ ( value ) =>
-									setResponsiveAttribute(
-										'autoScrollBreakpoints',
-										carouselAutoScrollBreakpoints,
-										'tablet',
-										value
-									)
-								}
-							/>
-							<ToggleControl
-								label={ __(
-									'Auto-scroll on mobile',
-									'hm-carousel'
-								) }
-								checked={ carouselAutoScrollBreakpoints.mobile }
-								onChange={ ( value ) =>
-									setResponsiveAttribute(
-										'autoScrollBreakpoints',
-										carouselAutoScrollBreakpoints,
-										'mobile',
-										value
-									)
-								}
 							/>
 						</>
 					) }

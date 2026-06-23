@@ -43,13 +43,13 @@ The block provides a variation called "Articles Carousel" for quickly creating a
 
 ## Responsive Direction and Auto-scroll
 
-The carousel supports separate desktop, tablet, and mobile settings for direction, slides per page, height, fixed slide height, and Auto-scroll.
+The carousel supports separate desktop, tablet, and mobile settings for direction, slides per page, height, and fixed slide height.
 
 Use `Top to bottom` direction for vertical carousels. Splide requires a carousel height or fixed slide height for vertical tracks, so set `Carousel height` or `Fixed slide height` when a breakpoint uses `Top to bottom`. Blank vertical breakpoint heights inherit the nearest earlier height value. When a later breakpoint switches back to a horizontal direction, inherited vertical height is cleared for that breakpoint.
 
 Track padding follows the active axis. Horizontal carousels use left/right padding, and vertical carousels use top/bottom padding.
 
-Auto-scroll can be enabled per breakpoint. Breakpoints with Auto-scroll enabled use loop mode and disable autoplay, arrows, and pagination. Breakpoints with Auto-scroll disabled restore the configured carousel type, autoplay, arrows, and pagination settings.
+Auto-scroll applies across all breakpoints when enabled. It uses loop mode and disables autoplay, arrows, and pagination. Horizontal Auto-scroll breakpoints use content-width slide sizing unless a fixed slide width is configured, while vertical Auto-scroll breakpoints use the configured vertical height and slide sizing.
 
 ## Styling
 

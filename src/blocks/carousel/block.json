@@ -35,14 +35,6 @@
 			"type": "boolean",
 			"default": false
 		},
-		"autoScrollBreakpoints": {
-			"type": "object",
-			"default": {
-				"desktop": true,
-				"tablet": true,
-				"mobile": true
-			}
-		},
 		"autoScrollSpeed": {
 			"type": "number",
 			"default": 1
