@@ -1,156 +1,97 @@
 import './view.css';
 import { AutoScroll } from '@splidejs/splide-extension-auto-scroll';
+import {
+	BREAKPOINTS,
+	DEFAULT_DIRECTION,
+	DEFAULT_PADDING,
+	DEFAULT_RESPONSIVE_LENGTH,
+	createSplideConfig,
+	normalizeResponsiveSetting,
+} from './config.mjs';
 
 // Loaded globally to allow for re-use by other components.
 let Splide = null;
 
-const BLOCK_STYLES =  [ 'timeline' ];
+function parseJsonDataAttribute( value, fallback ) {
+	if ( ! value ) {
+		return fallback;
+	}
 
-function getBlockStyle( blockEl ) {
-	const styles = BLOCK_STYLES;
-	const foundStyle = styles.findIndex( ( style ) =>
-		blockEl.classList.contains( 'is-style-' + style )
-	);
-	return foundStyle >= 0 ? styles[ foundStyle ] : 'default';
+	try {
+		return JSON.parse( value );
+	} catch ( error ) {
+		return fallback;
+	}
 }
 
 /**
  * Functionality for the HM Carousel block.
  *
  * @param {Element} blockEl
+ * @param {Object}  settings
  */
 function setupCarousel( blockEl, settings ) {
-	const carouselContentEl = blockEl.querySelector('.hm-carousel__content');
-	const postTemplateEl = blockEl.querySelector('.wp-block-post-template');
-	const isQueryLoop = !!postTemplateEl;
+	const carouselContentEl = blockEl.querySelector( '.hm-carousel__content' );
+	const postTemplateEl = blockEl.querySelector( '.wp-block-post-template' );
+	const isQueryLoop = !! postTemplateEl;
 
-	       let targetList;
-	       let trackEl = blockEl.querySelector('.splide__track');
-	       if (!trackEl) {
-		       trackEl = document.createElement('div');
-		       trackEl.classList.add('splide__track');
-		       blockEl.appendChild(trackEl);
-	       }
+	let targetList;
+	let trackEl = blockEl.querySelector( '.splide__track' );
+	if ( ! trackEl ) {
+		trackEl = document.createElement( 'div' );
+		trackEl.classList.add( 'splide__track' );
+		blockEl.appendChild( trackEl );
+	}
 
-	       if (isQueryLoop) {
-		       // Only move postTemplateEl if not already inside trackEl
-		       if (postTemplateEl.parentElement !== trackEl) {
-			       trackEl.appendChild(postTemplateEl);
-		       }
-		       postTemplateEl.classList.add('splide__list');
-		       targetList = postTemplateEl;
-	       } else {
-		       if (carouselContentEl.parentElement !== trackEl) {
-			       trackEl.appendChild(carouselContentEl);
-		       }
-		       carouselContentEl.classList.add('splide__list');
-		       targetList = carouselContentEl;
-	       }
+	if ( isQueryLoop ) {
+		// Only move postTemplateEl if not already inside trackEl
+		if ( postTemplateEl.parentElement !== trackEl ) {
+			trackEl.appendChild( postTemplateEl );
+		}
+		postTemplateEl.classList.add( 'splide__list' );
+		targetList = postTemplateEl;
+	} else {
+		if ( carouselContentEl.parentElement !== trackEl ) {
+			trackEl.appendChild( carouselContentEl );
+		}
+		carouselContentEl.classList.add( 'splide__list' );
+		targetList = carouselContentEl;
+	}
 
 	// Don't initialize carousel if target list doesn't exist or has less than 2 slides
-	if (!targetList || targetList.childElementCount < 2) {
+	if ( ! targetList || targetList.childElementCount < 2 ) {
 		return null;
 	}
 
-	blockEl.classList.add('splide');
+	blockEl.classList.add( 'splide' );
 
 	let slides;
-	if (isQueryLoop) {
-		Array.from(targetList.children).forEach((child) => {
-			if (child.nodeType === 1) {
-				child.classList.add('splide__slide');
+	if ( isQueryLoop ) {
+		Array.from( targetList.children ).forEach( ( child ) => {
+			if ( child.nodeType === 1 ) {
+				child.classList.add( 'splide__slide' );
 			}
-		});
-		slides = targetList.querySelectorAll('.splide__slide');
+		} );
+		slides = targetList.querySelectorAll( '.splide__slide' );
 	} else {
-		slides = targetList.querySelectorAll('.hm-carousel-slide');
-		slides.forEach((slide) => slide.classList.add('splide__slide'));
+		slides = targetList.querySelectorAll( '.hm-carousel-slide' );
+		slides.forEach( ( slide ) => slide.classList.add( 'splide__slide' ) );
 	}
 
 	setupNav( blockEl, settings );
 
 	// Detects columns for Query Loop and uses that as the perPage value, otherwise defaults to slidesPerPage setting or 1 for fade type.
 	let columns = null;
-	if (isQueryLoop && postTemplateEl) {
-		const match = Array.from(postTemplateEl.classList).find(cls => cls.startsWith('columns-'));
-		if (match) {
-			columns = parseInt(match.replace('columns-', ''), 10);
+	if ( isQueryLoop && postTemplateEl ) {
+		const match = Array.from( postTemplateEl.classList ).find( ( cls ) =>
+			cls.startsWith( 'columns-' )
+		);
+		if ( match ) {
+			columns = parseInt( match.replace( 'columns-', '' ), 10 );
 		}
 	}
 
-	const splideConfig = {
-		type: settings.type,
-		speed: settings.speed,
-		pagination: settings.hasPagination,
-		arrows: settings.hasNavButtons,
-		rewind: false,
-		perPage: columns || (settings.type === 'fade' ? 1 : settings.slidesPerPage.desktop),
-		autoplay: settings.autoplay,
-		pauseOnHover: settings.autoplay,
-		interval: settings.interval + settings.speed,
-		easing: settings.easing,
-		gap: settings.gap,
-		breakpoints: {
-			1024: {
-				perPage: columns || settings.slidesPerPage.tablet,
-			},
-			768: {
-				perPage: columns || settings.slidesPerPage.mobile,
-			},
-		},
-	};
-
-	// Auto-scroll: continuous linear scroll via Splide's AutoScroll extension.
-	// Requires type:'loop' and is incompatible with autoplay/pagination/arrows.
-	// autoWidth lets each slide size to its content; this is the marquee
-	// behavior AutoScroll expects, and avoids slides being stretched to a
-	// perPage-based width. Themes that need uniform slide widths can still
-	// set fixedWidth, which takes precedence over autoWidth in Splide.
-	if ( settings.autoScroll ) {
-		splideConfig.type = 'loop';
-		splideConfig.autoplay = false;
-		splideConfig.arrows = false;
-		splideConfig.pagination = false;
-		splideConfig.drag = 'free';
-		splideConfig.focus = 'center';
-		splideConfig.autoWidth = ! settings.fixedWidth;
-		splideConfig.autoScroll = {
-			speed: settings.autoScrollSpeed,
-			pauseOnHover: true,
-			pauseOnFocus: true,
-			rewind: false,
-		};
-	}
-
-	// Force disable pagination if thumbnail carousel is enabled.
-	if ( settings.hasThumbnailPagination ) {
-		splideConfig.pagination = false;
-		splideConfig.arrows = false;
-	}
-
-	// Should navigation move single slides or a page of slides.
-	if ( settings.moveSlidesIndividually ) {
-		splideConfig.perMove = 1;
-		splideConfig.focus = 0;
-	}
-
-	// Fixed slide width — overrides perPage-based sizing. Useful for layouts
-	// that need consistent slide widths regardless of viewport.
-	if ( settings.fixedWidth ) {
-		splideConfig.fixedWidth = settings.fixedWidth;
-	}
-
-	// Track padding — inset slides from the edges of the carousel container.
-	// Accepts left/right values; both default to 0 when one is omitted.
-	if ( settings.padding ) {
-		splideConfig.padding = {};
-		if ( settings.padding.left ) {
-			splideConfig.padding.left = settings.padding.left;
-		}
-		if ( settings.padding.right ) {
-			splideConfig.padding.right = settings.padding.right;
-		}
-	}
+	const splideConfig = createSplideConfig( settings, columns );
 
 	return new Splide( blockEl, splideConfig );
 }
@@ -180,36 +121,34 @@ function setupThumbnailCarousel( blockEl, settings ) {
 	const isQueryLoop = !! blockEl.querySelector( '.wp-block-post-template' );
 	const slideSelector = isQueryLoop ? '.wp-block-post' : '.hm-carousel-slide';
 
-	blockEl
-		.querySelectorAll( slideSelector )
-		.forEach( ( slideEl, i ) => {
-			const slideTitle = slideEl.dataset.title || 'Slide ' + ( i + 1 );
+	blockEl.querySelectorAll( slideSelector ).forEach( ( slideEl, i ) => {
+		const slideTitle = slideEl.dataset.title || 'Slide ' + ( i + 1 );
 
-			const thumbnailSlideEl = document.createElement( 'li' );
-			thumbnailSlideEl.classList.add( 'splide__slide' );
-			thumbnailList.appendChild( thumbnailSlideEl );
+		const thumbnailSlideEl = document.createElement( 'li' );
+		thumbnailSlideEl.classList.add( 'splide__slide' );
+		thumbnailList.appendChild( thumbnailSlideEl );
 
-			const btnEl = document.createElement( 'button' );
-			btnEl.classList.add( 'hm-carousel__thumbnails-button' );
-			thumbnailSlideEl.appendChild( btnEl );
+		const btnEl = document.createElement( 'button' );
+		btnEl.classList.add( 'hm-carousel__thumbnails-button' );
+		thumbnailSlideEl.appendChild( btnEl );
 
-			// Container span for styling.
-			const spanEl = document.createElement( 'span' );
-			spanEl.classList.add( 'hm-carousel__thumbnails-button-text' );
-			spanEl.appendChild( document.createTextNode( slideTitle ) );
+		// Container span for styling.
+		const spanEl = document.createElement( 'span' );
+		spanEl.classList.add( 'hm-carousel__thumbnails-button-text' );
+		spanEl.appendChild( document.createTextNode( slideTitle ) );
 
-			btnEl.appendChild( spanEl );
+		btnEl.appendChild( spanEl );
 
-			// Thumbnail image.
-			if ( slideEl.dataset.thumbnailImageSrc ) {
-				const imgEl = document.createElement( 'img' );
-				imgEl.classList.add( 'hm-carousel__thumbnails-button-img' );
-				imgEl.setAttribute( 'src', slideEl.dataset.thumbnailImageSrc );
-				imgEl.setAttribute( 'alt', slideTitle );
-				imgEl.setAttribute( 'loading', 'lazy' );
-				btnEl.appendChild( imgEl );
-			}
-		} );
+		// Thumbnail image.
+		if ( slideEl.dataset.thumbnailImageSrc ) {
+			const imgEl = document.createElement( 'img' );
+			imgEl.classList.add( 'hm-carousel__thumbnails-button-img' );
+			imgEl.setAttribute( 'src', slideEl.dataset.thumbnailImageSrc );
+			imgEl.setAttribute( 'alt', slideTitle );
+			imgEl.setAttribute( 'loading', 'lazy' );
+			btnEl.appendChild( imgEl );
+		}
+	} );
 
 	// Create arrow container
 	const arrowsEl = document.createElement( 'div' );
@@ -236,21 +175,33 @@ function setupThumbnailCarousel( blockEl, settings ) {
 
 	const thumbnailSplideConfig = {
 		rewind: true,
-		pagination: slideCount > settings.thumbnailCount.desktop && settings.thumbnailNavType === 'pagination',
-		arrows: slideCount > settings.thumbnailCount.desktop && settings.thumbnailNavType === 'buttons',
+		pagination:
+			slideCount > settings.thumbnailCount.desktop &&
+			settings.thumbnailNavType === 'pagination',
+		arrows:
+			slideCount > settings.thumbnailCount.desktop &&
+			settings.thumbnailNavType === 'buttons',
 		isNavigation: true,
 		perPage: settings.thumbnailCount.desktop,
 		gap: '1.5rem',
 		breakpoints: {
-			1024: {
+			[ BREAKPOINTS.tablet ]: {
 				perPage: settings.thumbnailCount.tablet,
-				pagination: slideCount > settings.thumbnailCount.tablet && settings.thumbnailNavType === 'pagination',
-				arrows: slideCount > settings.thumbnailCount.tablet && settings.thumbnailNavType === 'buttons',
+				pagination:
+					slideCount > settings.thumbnailCount.tablet &&
+					settings.thumbnailNavType === 'pagination',
+				arrows:
+					slideCount > settings.thumbnailCount.tablet &&
+					settings.thumbnailNavType === 'buttons',
 			},
-			768: {
+			[ BREAKPOINTS.mobile ]: {
 				perPage: settings.thumbnailCount.mobile,
-				pagination: slideCount > settings.thumbnailCount.tablet && settings.thumbnailNavType === 'pagination',
-				arrows: slideCount > settings.thumbnailCount.tablet && settings.thumbnailNavType === 'buttons',
+				pagination:
+					slideCount > settings.thumbnailCount.tablet &&
+					settings.thumbnailNavType === 'pagination',
+				arrows:
+					slideCount > settings.thumbnailCount.tablet &&
+					settings.thumbnailNavType === 'buttons',
 			},
 		},
 	};
@@ -318,6 +269,31 @@ function setupNav( blockEl, settings ) {
 	return navEl;
 }
 
+function setupResponsivePositionReset( carousel ) {
+	let previousDirection = carousel.options.direction;
+
+	carousel.on( 'updated', () => {
+		const currentDirection = carousel.options.direction;
+		const directionChanged = previousDirection !== currentDirection;
+
+		previousDirection = currentDirection;
+
+		if ( ! directionChanged ) {
+			return;
+		}
+
+		// AutoScroll can reapply its previous clone translate after breakpoint
+		// updates; reset after all responsive option handlers finish.
+		window.requestAnimationFrame( () => {
+			window.requestAnimationFrame( () => {
+				carousel.Components.Controller.setIndex( 0 );
+				carousel.Components.Move.jump( 0 );
+				carousel.Components.Slides.update();
+			} );
+		} );
+	} );
+}
+
 /**
  * carousel block.
  *
@@ -327,23 +303,61 @@ function setupNav( blockEl, settings ) {
  */
 function initCarouselBlock( blockEl ) {
 	const settings = {
-		speed: parseInt(blockEl.dataset.speed, 10) || 800,
+		speed: parseInt( blockEl.dataset.speed, 10 ) || 800,
 		type: blockEl.dataset.type || 'slide',
 		hasPagination: blockEl.dataset.hasPagination === 'true',
 		hasNavButtons: blockEl.dataset.hasNavButtons === 'true',
 		autoplay: blockEl.dataset.autoplay === 'true',
-		interval: blockEl.dataset.interval !== undefined ? parseInt(blockEl.dataset.interval, 10) : 3000,
+		interval:
+			blockEl.dataset.interval !== undefined
+				? parseInt( blockEl.dataset.interval, 10 )
+				: 3000,
 		easing: blockEl.dataset.easing || 'ease',
-		moveSlidesIndividually: blockEl.dataset.moveSlidesIndividually === 'true',
-		hasThumbnailPagination: blockEl.dataset.hasPagination === 'true' && blockEl.dataset.hasThumbnailPagination === 'true',
-		thumbnailCount: JSON.parse(blockEl.dataset.thumbnailCount),
-		slidesPerPage: JSON.parse(blockEl.dataset.slidesPerPage),
+		moveSlidesIndividually:
+			blockEl.dataset.moveSlidesIndividually === 'true',
+		hasThumbnailPagination:
+			blockEl.dataset.hasPagination === 'true' &&
+			blockEl.dataset.hasThumbnailPagination === 'true',
+		thumbnailCount: JSON.parse( blockEl.dataset.thumbnailCount ),
+		slidesPerPage: JSON.parse( blockEl.dataset.slidesPerPage ),
+		direction: normalizeResponsiveSetting(
+			parseJsonDataAttribute(
+				blockEl.dataset.direction,
+				DEFAULT_DIRECTION
+			),
+			DEFAULT_DIRECTION
+		),
+		height: normalizeResponsiveSetting(
+			parseJsonDataAttribute(
+				blockEl.dataset.height,
+				DEFAULT_RESPONSIVE_LENGTH
+			),
+			DEFAULT_RESPONSIVE_LENGTH
+		),
+		fixedHeight: normalizeResponsiveSetting(
+			parseJsonDataAttribute(
+				blockEl.dataset.fixedHeight,
+				DEFAULT_RESPONSIVE_LENGTH
+			),
+			DEFAULT_RESPONSIVE_LENGTH
+		),
 		thumbnailNavType: blockEl.dataset.thumbnailNavType || 'pagination',
 		fixedWidth: blockEl.dataset.fixedWidth || '',
 		gap: blockEl.dataset.gap || '1.5rem',
-		padding: blockEl.dataset.padding ? JSON.parse(blockEl.dataset.padding) : null,
+		padding: blockEl.dataset.padding
+			? {
+					...DEFAULT_PADDING,
+					...parseJsonDataAttribute(
+						blockEl.dataset.padding,
+						DEFAULT_PADDING
+					),
+			  }
+			: null,
 		autoScroll: blockEl.dataset.autoScroll === 'true',
-		autoScrollSpeed: blockEl.dataset.autoScrollSpeed !== undefined ? parseFloat(blockEl.dataset.autoScrollSpeed) : 1,
+		autoScrollSpeed:
+			blockEl.dataset.autoScrollSpeed !== undefined
+				? parseFloat( blockEl.dataset.autoScrollSpeed )
+				: 1,
 	};
 
 	const carousel = setupCarousel( blockEl, settings );
@@ -364,6 +378,7 @@ function initCarouselBlock( blockEl ) {
 		carousel.mount( extensions );
 	}
 
+	setupResponsivePositionReset( carousel );
 }
 
 /**
@@ -375,7 +390,10 @@ function bootstrap() {
 
 	// Check if Splide is available
 	if ( ! Splide ) {
-		console.error( 'Splide library not loaded. Carousel cannot be initialized.' );
+		// eslint-disable-next-line no-console
+		console.error(
+			'Splide library not loaded. Carousel cannot be initialized.'
+		);
 		return;
 	}
 	document

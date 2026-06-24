@@ -71,6 +71,30 @@
 				"mobile": 1
 			}
 		},
+		"direction": {
+			"type": "object",
+			"default": {
+				"desktop": "ltr",
+				"tablet": "ltr",
+				"mobile": "ltr"
+			}
+		},
+		"height": {
+			"type": "object",
+			"default": {
+				"desktop": "",
+				"tablet": "",
+				"mobile": ""
+			}
+		},
+		"fixedHeight": {
+			"type": "object",
+			"default": {
+				"desktop": "",
+				"tablet": "",
+				"mobile": ""
+			}
+		},
 		"thumbnailNavType": {
 			"type": "string",
 			"default": "pagination"
@@ -98,7 +122,9 @@
 			"type": "object",
 			"default": {
 				"left": "",
-				"right": ""
+				"right": "",
+				"top": "",
+				"bottom": ""
 			}
 		}
 	},
