@@ -87,6 +87,21 @@ function hasPreviousLengthValue( values, breakpoint ) {
 	);
 }
 
+/**
+ * Add a px unit to a unitless number, as typed in the editor's length fields.
+ *
+ * Splide adds px only to numeric options and passes strings through as CSS,
+ * so a string such as "600" would become an invalid `height: 600`.
+ *
+ * @param {string} value Length from a block attribute.
+ * @return {string} CSS length.
+ */
+export function toCssLength( value ) {
+	const length = String( value ?? '' ).trim();
+
+	return /^\d+(\.\d+)?$/.test( length ) ? `${ length }px` : length;
+}
+
 function setResponsiveLengthOption(
 	config,
 	option,
@@ -97,7 +112,7 @@ function setResponsiveLengthOption(
 	const value = getResponsiveValue( values, breakpoint );
 
 	if ( value ) {
-		config[ option ] = value;
+		config[ option ] = toCssLength( value );
 		return;
 	}
 
@@ -106,7 +121,7 @@ function setResponsiveLengthOption(
 	if ( direction === 'ttb' ) {
 		const inheritedValue = getInheritedLengthValue( values, breakpoint );
 		if ( inheritedValue && breakpoint !== 'desktop' ) {
-			config[ option ] = inheritedValue;
+			config[ option ] = toCssLength( inheritedValue );
 		}
 		return;
 	}
