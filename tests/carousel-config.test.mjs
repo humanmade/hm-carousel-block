@@ -88,6 +88,25 @@ test( 'clears inherited vertical height when a breakpoint switches to horizontal
 	assert.equal( config.breakpoints[ BREAKPOINTS.mobile ].height, '' );
 } );
 
+test( 'adds px to unitless heights', () => {
+	const config = buildConfig( {
+		height: {
+			desktop: '600',
+			tablet: '40rem',
+			mobile: '',
+		},
+		fixedHeight: {
+			desktop: ' 320.5 ',
+			tablet: '',
+			mobile: '',
+		},
+	} );
+
+	assert.equal( config.height, '600px' );
+	assert.equal( config.breakpoints[ BREAKPOINTS.tablet ].height, '40rem' );
+	assert.equal( config.fixedHeight, '320.5px' );
+} );
+
 test( 'keeps Auto-scroll active while sizing follows responsive direction', () => {
 	const config = buildConfig( {
 		autoScroll: true,
